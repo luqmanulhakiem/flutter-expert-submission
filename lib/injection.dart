@@ -34,7 +34,7 @@ import 'package:ditonton/src/features/tv/domain/usecases/remove_watchlist_tv_ser
 import 'package:ditonton/src/features/tv/domain/usecases/save_watchlist_tv_series.dart';
 import 'package:ditonton/src/features/tv/domain/usecases/search_tv_series.dart';
 import 'package:ditonton/src/features/tv/presentation/blocs/now_playing_tv/now_playing_tv_bloc.dart';
-import 'package:ditonton/src/features/tv/presentation/provider/popular_tv_notifier.dart';
+import 'package:ditonton/src/features/tv/presentation/blocs/tv_popular/tv_popular_bloc.dart';
 import 'package:ditonton/src/features/tv/presentation/provider/top_rated_tv_notifier.dart';
 import 'package:ditonton/src/features/tv/presentation/provider/tv_search_notifier.dart';
 import 'package:ditonton/src/features/tv/presentation/provider/tv_series_detail_notifier.dart';
@@ -68,11 +68,7 @@ void init() {
       searchTvSeries: locator(),
     ),
   );
-  locator.registerFactory(
-    () => PopularTvNotifier(
-      locator(),
-    ),
-  );
+
   locator.registerFactory(
     () => TopRatedTvNotifier(
       getTopRatedTvSeries: locator(),
@@ -139,6 +135,7 @@ void init() {
   locator.registerLazySingleton(() => WatchlistMoviesBloc(locator()));
 
   locator.registerLazySingleton(() => NowPlayingTvBloc(locator()));
+  locator.registerLazySingleton(() => TvPopularBloc(locator()));
 
   // helper
   locator.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());

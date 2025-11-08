@@ -1,14 +1,11 @@
-import 'package:dartz/dartz.dart';
-import 'package:ditonton/src/core/common/failure.dart';
-import 'package:ditonton/src/features/tv/domain/entities/tv.dart';
-import 'package:ditonton/src/features/tv/domain/repositories/tv_series_repository.dart';
+import 'package:ditonton/src/features/tv/presentation/blocs/tv_popular/tv_popular_bloc.dart';
 
 class GetPopularTvSeries {
-  final TvSeriesRepository repository;
+  final TvPopularBloc bloc;
 
-  GetPopularTvSeries(this.repository);
+  GetPopularTvSeries(this.bloc);
 
-  Future<Either<Failure, List<Tv>>> execute() {
-    return repository.getPopularTvSeries();
+  Future<void> execute() async {
+    bloc.add(TvPopulaDataLoaded());
   }
 }

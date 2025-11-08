@@ -56,24 +56,24 @@ class TvSeriesListNotifier extends ChangeNotifier {
   //   );
   // }
 
-  Future<void> fetchPopularTvSeries() async {
-    _popularTvSeriesState = RequestState.Loading;
-    notifyListeners();
+  // Future<void> fetchPopularTvSeries() async {
+  //   _popularTvSeriesState = RequestState.Loading;
+  //   notifyListeners();
 
-    final result = await getPopularTvSeries.execute();
-    result.fold(
-      (failure) {
-        _popularTvSeriesState = RequestState.Error;
-        _message = failure.message;
-        notifyListeners();
-      },
-      (tvSeriesData) {
-        _popularTvSeriesState = RequestState.Loaded;
-        _popularTvSeries = tvSeriesData;
-        notifyListeners();
-      },
-    );
-  }
+  //   final result = await getPopularTvSeries.execute();
+  //   result.fold(
+  //     (failure) {
+  //       _popularTvSeriesState = RequestState.Error;
+  //       _message = failure.message;
+  //       notifyListeners();
+  //     },
+  //     (tvSeriesData) {
+  //       _popularTvSeriesState = RequestState.Loaded;
+  //       _popularTvSeries = tvSeriesData;
+  //       notifyListeners();
+  //     },
+  //   );
+  // }
 
   Future<void> fetchTopRatedTvSeries() async {
     _topRatedTvSeriesState = RequestState.Loading;

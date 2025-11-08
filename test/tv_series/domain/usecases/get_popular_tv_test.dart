@@ -1,35 +1,35 @@
-import 'package:dartz/dartz.dart';
-import 'package:ditonton/src/features/tv/domain/entities/tv.dart';
+import 'package:bloc_test/bloc_test.dart';
 import 'package:ditonton/src/features/tv/domain/usecases/get_popular_tv_series.dart';
+import 'package:ditonton/src/features/tv/presentation/blocs/tv_popular/tv_popular_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart' as mt;
 
-import '../../helpers/test_helper.mocks.dart';
+class MockTvPopularBloc extends MockBloc<TvPopularEvent, TvPopularState>
+    implements TvPopularBloc {}
 
 void main() {
-  late GetPopularTvSeries usecase;
-  late MockTvSeriesRepository mockMovieRpository;
-
-  setUp(() {
-    mockMovieRpository = MockTvSeriesRepository();
-    usecase = GetPopularTvSeries(mockMovieRpository);
+  late MockTvPopularBloc bloc;
+  setUpAll(() {
+    mt.registerFallbackValue(TvPopulaDataLoaded());
+    bloc = MockTvPopularBloc();
   });
 
-  final tTv = <Tv>[];
+  test("GetPopularTvSeries call TvPopulaDataLoaded", () async {
+    mt.when(() => bloc.state).thenReturn(TvPopularInitial());
 
-  group('GetPopularTvSeries Tests', () {
-    group('execute', () {
-      test(
-          'should get list of tv series from the repository when execute function is called',
-          () async {
-        // arrange
-        when(mockMovieRpository.getPopularTvSeries())
-            .thenAnswer((_) async => Right(tTv));
-        // act
-        final result = await usecase.execute();
-        // assert
-        expect(result, Right(tTv));
-      });
-    });
+    final usecase = GetPopularTvSeries(bloc);
+
+    await usecase.execute();
+
+    mt
+        .verify(() =>
+            bloc.add(mt.any<TvPopularEvent>(that: isA<TvPopulaDataLoaded>())))
+        .called(1);
+  });
+
+  test('execute must success', () async {
+    whenListen(bloc, const Stream<TvPopularState>.empty(),
+        initialState: TvPopularInitial());
+    await expectLater(GetPopularTvSeries(bloc).execute(), completes);
   });
 }

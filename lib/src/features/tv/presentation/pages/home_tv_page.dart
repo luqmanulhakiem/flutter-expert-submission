@@ -3,7 +3,9 @@ import 'package:ditonton/src/core/common/constants.dart';
 import 'package:ditonton/src/core/common/state_enum.dart';
 import 'package:ditonton/src/features/tv/domain/entities/tv.dart';
 import 'package:ditonton/src/features/tv/domain/usecases/get_now_playing_tv_series.dart';
+import 'package:ditonton/src/features/tv/domain/usecases/get_popular_tv_series.dart';
 import 'package:ditonton/src/features/tv/presentation/blocs/now_playing_tv/now_playing_tv_bloc.dart';
+import 'package:ditonton/src/features/tv/presentation/blocs/tv_popular/tv_popular_bloc.dart';
 import 'package:ditonton/src/features/tv/presentation/pages/popular_tv_page.dart';
 import 'package:ditonton/src/features/tv/presentation/pages/search_tv_page.dart';
 import 'package:ditonton/src/features/tv/presentation/pages/top_rated_tv_page.dart';
@@ -26,21 +28,20 @@ class _HomeTvPageState extends State<HomeTvPage> {
   void initState() {
     super.initState();
     _loadData();
-    Future.microtask(
-      () => Provider.of<TvSeriesListNotifier>(context, listen: false)
-        // ..fetchNowPlayingTvSeries()
-        ..fetchTopRatedTvSeries()
-        ..fetchPopularTvSeries(),
-    );
+    Future.microtask(() =>
+        Provider.of<TvSeriesListNotifier>(context, listen: false)
+          ..fetchTopRatedTvSeries());
   }
 
   Future<void> _loadData() async {
     // Blocs
     final nowPlayingBloc =
         BlocProvider.of<NowPlayingTvBloc>(context, listen: false);
+    final popularBloc = BlocProvider.of<TvPopularBloc>(context, listen: false);
 
     // Use cases
     await GetNowPlayingTvSeries(nowPlayingBloc).execute();
+    await GetPopularTvSeries(popularBloc).execute();
   }
 
   @override
@@ -85,18 +86,18 @@ class _HomeTvPageState extends State<HomeTvPage> {
                 onTap: () =>
                     Navigator.pushNamed(context, PopularTvPage.ROUTE_NAME),
               ),
-              Consumer<TvSeriesListNotifier>(builder: (context, data, child) {
-                final state = data.popularTvSeriesState;
-                if (state == RequestState.Loading) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (state == RequestState.Loaded) {
-                  return TvSeries(data.popularTv);
-                } else {
+              BlocBuilder<TvPopularBloc, TvPopularState>(
+                builder: (context, state) {
+                  if (state is TvPopularInProgress) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is TvPopularSuccess) {
+                    return TvSeries(state.data);
+                  }
                   return Text('Failed');
-                }
-              }),
+                },
+              ),
               _buildSubHeading(
                 title: 'Top Rated',
                 onTap: () =>
