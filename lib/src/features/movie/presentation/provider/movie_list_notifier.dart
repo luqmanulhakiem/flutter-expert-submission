@@ -55,24 +55,24 @@ class MovieListNotifier extends ChangeNotifier {
   //   );
   // }
 
-  Future<void> fetchPopularMovies() async {
-    _popularMoviesState = RequestState.Loading;
-    notifyListeners();
+  // Future<void> fetchPopularMovies() async {
+  //   _popularMoviesState = RequestState.Loading;
+  //   notifyListeners();
 
-    final result = await getPopularMovies.execute();
-    result.fold(
-      (failure) {
-        _popularMoviesState = RequestState.Error;
-        _message = failure.message;
-        notifyListeners();
-      },
-      (moviesData) {
-        _popularMoviesState = RequestState.Loaded;
-        _popularMovies = moviesData;
-        notifyListeners();
-      },
-    );
-  }
+  //   final result = await getPopularMovies.execute();
+  //   result.fold(
+  //     (failure) {
+  //       _popularMoviesState = RequestState.Error;
+  //       _message = failure.message;
+  //       notifyListeners();
+  //     },
+  //     (moviesData) {
+  //       _popularMoviesState = RequestState.Loaded;
+  //       _popularMovies = moviesData;
+  //       notifyListeners();
+  //     },
+  //   );
+  // }
 
   Future<void> fetchTopRatedMovies() async {
     _topRatedMoviesState = RequestState.Loading;

@@ -1,6 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:ditonton/src/features/movie/domain/usecases/get_now_playing_movies.dart';
-import 'package:ditonton/src/features/movie/presentation/blocs/bloc/now_playing_movies_bloc.dart';
+import 'package:ditonton/src/features/movie/presentation/blocs/now_playing_movies/now_playing_movies_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart' as mt;
 

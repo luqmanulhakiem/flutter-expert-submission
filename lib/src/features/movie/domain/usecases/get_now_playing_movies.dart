@@ -1,4 +1,4 @@
-import 'package:ditonton/src/features/movie/presentation/blocs/bloc/now_playing_movies_bloc.dart';
+import 'package:ditonton/src/features/movie/presentation/blocs/now_playing_movies/now_playing_movies_bloc.dart';
 
 class GetNowPlayingMovies {
   final NowPlayingMoviesBloc bloc;

@@ -13,7 +13,8 @@ import 'package:ditonton/src/features/movie/domain/usecases/get_watchlist_status
 import 'package:ditonton/src/features/movie/domain/usecases/remove_watchlist.dart';
 import 'package:ditonton/src/features/movie/domain/usecases/save_watchlist.dart';
 import 'package:ditonton/src/features/movie/domain/usecases/search_movies.dart';
-import 'package:ditonton/src/features/movie/presentation/blocs/bloc/now_playing_movies_bloc.dart';
+import 'package:ditonton/src/features/movie/presentation/blocs/now_playing_movies/now_playing_movies_bloc.dart';
+import 'package:ditonton/src/features/movie/presentation/blocs/popular_movies/popular_movies_bloc.dart';
 import 'package:ditonton/src/features/movie/presentation/provider/movie_detail_notifier.dart';
 import 'package:ditonton/src/features/movie/presentation/provider/movie_list_notifier.dart';
 import 'package:ditonton/src/features/movie/presentation/provider/movie_search_notifier.dart';
@@ -167,6 +168,7 @@ void init() {
 
   // Blocs
   locator.registerLazySingleton(() => NowPlayingMoviesBloc(locator()));
+  locator.registerLazySingleton(() => PopularMoviesBloc(locator()));
 
   // helper
   locator.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());

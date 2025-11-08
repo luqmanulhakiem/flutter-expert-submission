@@ -1,35 +1,36 @@
-import 'package:dartz/dartz.dart';
-import 'package:ditonton/src/features/movie/domain/entities/movie.dart';
+import 'package:bloc_test/bloc_test.dart';
 import 'package:ditonton/src/features/movie/domain/usecases/get_popular_movies.dart';
+import 'package:ditonton/src/features/movie/presentation/blocs/popular_movies/popular_movies_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart' as mt;
 
-import '../../helpers/test_helper.mocks.dart';
+class MockNowPlayingMoviesBloc
+    extends MockBloc<PopularMoviesEvent, PopularMoviesState>
+    implements PopularMoviesBloc {}
 
 void main() {
-  late GetPopularMovies usecase;
-  late MockMovieRepository mockMovieRpository;
-
-  setUp(() {
-    mockMovieRpository = MockMovieRepository();
-    usecase = GetPopularMovies(mockMovieRpository);
+  late MockNowPlayingMoviesBloc bloc;
+  setUpAll(() {
+    mt.registerFallbackValue(PopularMoviesDataLoaded());
+    bloc = MockNowPlayingMoviesBloc();
   });
 
-  final tMovies = <Movie>[];
+  test("GetPopularMovies call PopularMoviesDataLoaded", () async {
+    mt.when(() => bloc.state).thenReturn(PopularMoviesInitial());
 
-  group('GetPopularMovies Tests', () {
-    group('execute', () {
-      test(
-          'should get list of movies from the repository when execute function is called',
-          () async {
-        // arrange
-        when(mockMovieRpository.getPopularMovies())
-            .thenAnswer((_) async => Right(tMovies));
-        // act
-        final result = await usecase.execute();
-        // assert
-        expect(result, Right(tMovies));
-      });
-    });
+    final usecase = GetPopularMovies(bloc);
+
+    await usecase.execute();
+
+    mt
+        .verify(() => bloc.add(
+            mt.any<PopularMoviesEvent>(that: isA<PopularMoviesDataLoaded>())))
+        .called(1);
+  });
+
+  test('execute must success', () async {
+    whenListen(bloc, const Stream<PopularMoviesState>.empty(),
+        initialState: PopularMoviesInitial());
+    await expectLater(GetPopularMovies(bloc).execute(), completes);
   });
 }

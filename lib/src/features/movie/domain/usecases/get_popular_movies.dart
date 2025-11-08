@@ -1,14 +1,11 @@
-import 'package:dartz/dartz.dart';
-import 'package:ditonton/src/core/common/failure.dart';
-import 'package:ditonton/src/features/movie/domain/entities/movie.dart';
-import 'package:ditonton/src/features/movie/domain/repositories/movie_repository.dart';
+import 'package:ditonton/src/features/movie/presentation/blocs/popular_movies/popular_movies_bloc.dart';
 
 class GetPopularMovies {
-  final MovieRepository repository;
+  final PopularMoviesBloc bloc;
 
-  GetPopularMovies(this.repository);
+  GetPopularMovies(this.bloc);
 
-  Future<Either<Failure, List<Movie>>> execute() {
-    return repository.getPopularMovies();
+  Future<void> execute() async {
+    bloc.add(PopularMoviesDataLoaded());
   }
 }
