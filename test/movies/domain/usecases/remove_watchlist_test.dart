@@ -1,28 +1,40 @@
-import 'package:dartz/dartz.dart';
+import 'package:bloc_test/bloc_test.dart';
 import 'package:ditonton/src/features/movie/domain/usecases/remove_watchlist.dart';
+import 'package:ditonton/src/features/movie/presentation/blocs/top_rated_movies/top_rated_movies_bloc.dart';
+import 'package:ditonton/src/features/movie/presentation/blocs/watchlist_movies/watchlist_movies_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart' as mt;
 
 import '../../dummy_data/dummy_objects.dart';
-import '../../helpers/test_helper.mocks.dart';
+
+class MockWatchlistMoviesBloc
+    extends MockBloc<WatchlistMoviesEvent, WatchlistMoviesState>
+    implements WatchlistMoviesBloc {}
 
 void main() {
-  late RemoveWatchlist usecase;
-  late MockMovieRepository mockMovieRepository;
-
-  setUp(() {
-    mockMovieRepository = MockMovieRepository();
-    usecase = RemoveWatchlist(mockMovieRepository);
+  late MockWatchlistMoviesBloc bloc;
+  setUpAll(() {
+    mt.registerFallbackValue(WatchlistMoviesDataRemoved(data: testMovieDetail));
+    bloc = MockWatchlistMoviesBloc();
   });
 
-  test('should remove watchlist movie from repository', () async {
-    // arrange
-    when(mockMovieRepository.removeWatchlist(testMovieDetail))
-        .thenAnswer((_) async => Right('Removed from watchlist'));
-    // act
-    final result = await usecase.execute(testMovieDetail);
-    // assert
-    verify(mockMovieRepository.removeWatchlist(testMovieDetail));
-    expect(result, Right('Removed from watchlist'));
+  test("RemoveWatchlist call WatchlistMoviesDataRemoved", () async {
+    mt.when(() => bloc.state).thenReturn(WatchlistMoviesInitial());
+
+    final usecase = RemoveWatchlist(bloc);
+
+    await usecase.execute(testMovieDetail);
+
+    mt
+        .verify(() => bloc.add(mt.any<WatchlistMoviesEvent>(
+            that: isA<WatchlistMoviesDataRemoved>())))
+        .called(1);
+  });
+
+  test('execute must success', () async {
+    whenListen(bloc, const Stream<WatchlistMoviesState>.empty(),
+        initialState: TopRatedMoviesInitial());
+    await expectLater(
+        RemoveWatchlist(bloc).execute(testMovieDetail), completes);
   });
 }

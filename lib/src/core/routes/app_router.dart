@@ -4,7 +4,6 @@ import 'package:ditonton/src/features/movie/presentation/pages/movie_detail_page
 import 'package:ditonton/src/features/movie/presentation/pages/popular_movies_page.dart';
 import 'package:ditonton/src/features/movie/presentation/pages/search_page.dart';
 import 'package:ditonton/src/features/movie/presentation/pages/top_rated_movies_page.dart';
-import 'package:ditonton/src/features/movie/presentation/pages/watchlist_movies_page.dart';
 import 'package:ditonton/src/features/tv/presentation/pages/home_tv_page.dart';
 import 'package:ditonton/src/features/tv/presentation/pages/popular_tv_page.dart';
 import 'package:ditonton/src/features/tv/presentation/pages/search_tv_page.dart';
@@ -45,8 +44,6 @@ class AppRouter {
         return CupertinoPageRoute(builder: (_) => SearchPage());
       case SearchTvPage.ROUTE_NAME:
         return CupertinoPageRoute(builder: (_) => SearchTvPage());
-      case WatchlistMoviesPage.ROUTE_NAME:
-        return MaterialPageRoute(builder: (_) => WatchlistMoviesPage());
       case WatchlistPage.ROUTE_NAME:
         return MaterialPageRoute(builder: (_) => WatchlistPage());
       case AboutPage.ROUTE_NAME:

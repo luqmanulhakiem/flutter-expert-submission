@@ -18,8 +18,7 @@ import 'package:ditonton/src/features/movie/presentation/blocs/now_playing_movie
 import 'package:ditonton/src/features/movie/presentation/blocs/popular_movies/popular_movies_bloc.dart';
 import 'package:ditonton/src/features/movie/presentation/blocs/recommendation_movies/recommendation_movies_bloc.dart';
 import 'package:ditonton/src/features/movie/presentation/blocs/top_rated_movies/top_rated_movies_bloc.dart';
-import 'package:ditonton/src/features/movie/presentation/provider/movie_detail_notifier.dart';
-import 'package:ditonton/src/features/movie/presentation/provider/watchlist_movie_notifier.dart';
+import 'package:ditonton/src/features/movie/presentation/blocs/watchlist_movies/watchlist_movies_bloc.dart';
 import 'package:ditonton/src/features/tv/data/datasources/tv_series_local_data_source.dart';
 import 'package:ditonton/src/features/tv/data/datasources/tv_series_remote_data_source.dart';
 import 'package:ditonton/src/features/tv/data/repositories/tv_series_repository_impl.dart';
@@ -55,15 +54,6 @@ void init() {
     ),
   );
   locator.registerFactory(
-    () => MovieDetailNotifier(
-      getMovieDetail: locator(),
-      getMovieRecommendations: locator(),
-      getWatchListStatus: locator(),
-      saveWatchlist: locator(),
-      removeWatchlist: locator(),
-    ),
-  );
-  locator.registerFactory(
     () => TvSeriesDetailNotifier(
       getDetailTvSeries: locator(),
       getRecommendationsTvSeries: locator(),
@@ -85,11 +75,6 @@ void init() {
   locator.registerFactory(
     () => TopRatedTvNotifier(
       getTopRatedTvSeries: locator(),
-    ),
-  );
-  locator.registerFactory(
-    () => WatchlistMovieNotifier(
-      getWatchlistMovies: locator(),
     ),
   );
   locator.registerFactory(
@@ -150,6 +135,7 @@ void init() {
   locator.registerLazySingleton(() => TopRatedMoviesBloc(locator()));
   locator.registerLazySingleton(() => MoviesBloc(locator()));
   locator.registerLazySingleton(() => RecommendationMoviesBloc(locator()));
+  locator.registerLazySingleton(() => WatchlistMoviesBloc(locator()));
 
   // helper
   locator.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());

@@ -18,8 +18,6 @@ void main() {
   late DatabaseHelper databaseHelper;
   late MovieRepositoryImpl repositoryImpl;
   late MoviesBloc bloc;
-  final baseURL =
-      "https://api.themoviedb.org/3/search/movie?api_key=2174d146bb9c0eab47529b2e77d6b526&query=Spiderman";
 
   setUp(() {
     client = MockHttpClient();
@@ -32,6 +30,8 @@ void main() {
   });
 
   group("Search Movie", () {
+    final baseURL =
+        "https://api.themoviedb.org/3/search/movie?api_key=2174d146bb9c0eab47529b2e77d6b526&query=Spiderman";
     blocTest<MoviesBloc, MoviesState>(
       'emits [MoviesInProgress, MoviesSuccess] when MoviesDataSearched is added.',
       build: () => bloc,
@@ -58,6 +58,39 @@ void main() {
       expect: () => [
         isA<MoviesInProgress>(),
         isA<MoviesFailure>(),
+      ],
+    );
+  });
+
+  group("Detail Movie", () {
+    final baseURL =
+        "https://api.themoviedb.org/3/movie/1?api_key=2174d146bb9c0eab47529b2e77d6b526";
+
+    blocTest<MoviesBloc, MoviesState>(
+      'emits [MoviesSingleInProgress, MoviesSingleSuccess] when MoviesDataSingleLoaded is added.',
+      build: () => bloc,
+      setUp: () async {
+        return mc.when(client.get(Uri.parse(baseURL))).thenAnswer((_) async =>
+            Response(readJson("movies/dummy_data/movie_detail.json"), 200));
+      },
+      act: (bloc) => bloc.add(MoviesDataSingleLoaded(id: 1)),
+      expect: () => [
+        isA<MoviesSingleInProgress>(),
+        isA<MoviesSingleSuccess>(),
+      ],
+    );
+    blocTest<MoviesBloc, MoviesState>(
+      'emits [MoviesSingleInProgress, MoviesSingleFailure] when MoviesDataSingleLoaded is added.',
+      build: () => bloc,
+      setUp: () async {
+        return mc
+            .when(client.get(Uri.parse(baseURL)))
+            .thenAnswer((_) async => Response("Not Found", 400));
+      },
+      act: (bloc) => bloc.add(MoviesDataSingleLoaded(id: 1)),
+      expect: () => [
+        isA<MoviesSingleInProgress>(),
+        isA<MoviesSingleFailure>(),
       ],
     );
   });

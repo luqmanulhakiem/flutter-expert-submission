@@ -1,14 +1,12 @@
-import 'package:dartz/dartz.dart';
-import 'package:ditonton/src/core/common/failure.dart';
 import 'package:ditonton/src/features/movie/domain/entities/movie_detail.dart';
-import 'package:ditonton/src/features/movie/domain/repositories/movie_repository.dart';
+import 'package:ditonton/src/features/movie/presentation/blocs/watchlist_movies/watchlist_movies_bloc.dart';
 
 class RemoveWatchlist {
-  final MovieRepository repository;
+  final WatchlistMoviesBloc bloc;
 
-  RemoveWatchlist(this.repository);
+  RemoveWatchlist(this.bloc);
 
-  Future<Either<Failure, String>> execute(MovieDetail movie) {
-    return repository.removeWatchlist(movie);
+  Future<void> execute(MovieDetail movie) async {
+    bloc.add(WatchlistMoviesDataRemoved(data: movie));
   }
 }

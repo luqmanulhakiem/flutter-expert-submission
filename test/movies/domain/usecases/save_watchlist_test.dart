@@ -1,28 +1,39 @@
-import 'package:dartz/dartz.dart';
+import 'package:bloc_test/bloc_test.dart';
 import 'package:ditonton/src/features/movie/domain/usecases/save_watchlist.dart';
+import 'package:ditonton/src/features/movie/presentation/blocs/top_rated_movies/top_rated_movies_bloc.dart';
+import 'package:ditonton/src/features/movie/presentation/blocs/watchlist_movies/watchlist_movies_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart' as mt;
 
 import '../../dummy_data/dummy_objects.dart';
-import '../../helpers/test_helper.mocks.dart';
+
+class MockWatchlistMoviesBloc
+    extends MockBloc<WatchlistMoviesEvent, WatchlistMoviesState>
+    implements WatchlistMoviesBloc {}
 
 void main() {
-  late SaveWatchlist usecase;
-  late MockMovieRepository mockMovieRepository;
-
-  setUp(() {
-    mockMovieRepository = MockMovieRepository();
-    usecase = SaveWatchlist(mockMovieRepository);
+  late MockWatchlistMoviesBloc bloc;
+  setUpAll(() {
+    mt.registerFallbackValue(WatchlistMoviesDataStored(data: testMovieDetail));
+    bloc = MockWatchlistMoviesBloc();
   });
 
-  test('should save movie to the repository', () async {
-    // arrange
-    when(mockMovieRepository.saveWatchlist(testMovieDetail))
-        .thenAnswer((_) async => Right('Added to Watchlist'));
-    // act
-    final result = await usecase.execute(testMovieDetail);
-    // assert
-    verify(mockMovieRepository.saveWatchlist(testMovieDetail));
-    expect(result, Right('Added to Watchlist'));
+  test("SaveWatchlist call WatchlistMoviesDataStored", () async {
+    mt.when(() => bloc.state).thenReturn(WatchlistMoviesInitial());
+
+    final usecase = SaveWatchlist(bloc);
+
+    await usecase.execute(testMovieDetail);
+
+    mt
+        .verify(() => bloc.add(mt.any<WatchlistMoviesEvent>(
+            that: isA<WatchlistMoviesDataStored>())))
+        .called(1);
+  });
+
+  test('execute must success', () async {
+    whenListen(bloc, const Stream<WatchlistMoviesState>.empty(),
+        initialState: TopRatedMoviesInitial());
+    await expectLater(SaveWatchlist(bloc).execute(testMovieDetail), completes);
   });
 }

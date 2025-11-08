@@ -1,1 +1,1 @@
-genhtml -o coverage/html coverage/lcov.info
+genhtml coverage/lcov.info -o coverage/html

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Test Date:</td>
-            <td class="headerValue">2025-08-24 18:01:22</td>
+            <td class="headerValue">2025-11-08 15:28:41</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntryHi">-</td>
@@ -71,7 +71,7 @@
 <span id="L9"><span class="lineNum">       9</span>              :   final String? overview;</span>
 <span id="L10"><span class="lineNum">      10</span>              :   final String type;</span>
 <span id="L11"><span class="lineNum">      11</span>              : </span>
-<span id="L12"><span class="lineNum">      12</span> <span class="tlaGNC">           2 :   MovieTable({</span></span>
+<span id="L12"><span class="lineNum">      12</span> <span class="tlaGNC">           3 :   MovieTable({</span></span>
 <span id="L13"><span class="lineNum">      13</span>              :     required this.id,</span>
 <span id="L14"><span class="lineNum">      14</span>              :     required this.title,</span>
 <span id="L15"><span class="lineNum">      15</span>              :     required this.posterPath,</span>
@@ -79,11 +79,11 @@
 <span id="L17"><span class="lineNum">      17</span>              :     required this.type,</span>
 <span id="L18"><span class="lineNum">      18</span>              :   });</span>
 <span id="L19"><span class="lineNum">      19</span>              : </span>
-<span id="L20"><span class="lineNum">      20</span> <span class="tlaGNC">           2 :   factory MovieTable.fromEntity(MovieDetail movie) =&gt; MovieTable(</span></span>
-<span id="L21"><span class="lineNum">      21</span> <span class="tlaGNC">           1 :       id: movie.id,</span></span>
-<span id="L22"><span class="lineNum">      22</span> <span class="tlaGNC">           1 :       title: movie.title,</span></span>
-<span id="L23"><span class="lineNum">      23</span> <span class="tlaGNC">           1 :       posterPath: movie.posterPath,</span></span>
-<span id="L24"><span class="lineNum">      24</span> <span class="tlaGNC">           1 :       overview: movie.overview,</span></span>
+<span id="L20"><span class="lineNum">      20</span> <span class="tlaGNC">           4 :   factory MovieTable.fromEntity(MovieDetail movie) =&gt; MovieTable(</span></span>
+<span id="L21"><span class="lineNum">      21</span> <span class="tlaGNC">           2 :       id: movie.id,</span></span>
+<span id="L22"><span class="lineNum">      22</span> <span class="tlaGNC">           2 :       title: movie.title,</span></span>
+<span id="L23"><span class="lineNum">      23</span> <span class="tlaGNC">           2 :       posterPath: movie.posterPath,</span></span>
+<span id="L24"><span class="lineNum">      24</span> <span class="tlaGNC">           2 :       overview: movie.overview,</span></span>
 <span id="L25"><span class="lineNum">      25</span>              :       type: &quot;movies&quot;);</span>
 <span id="L26"><span class="lineNum">      26</span>              : </span>
 <span id="L27"><span class="lineNum">      27</span> <span class="tlaGNC">           2 :   factory MovieTable.fromMap(Map&lt;String, dynamic&gt; map) =&gt; MovieTable(</span></span>
@@ -101,11 +101,11 @@
 <span id="L39"><span class="lineNum">      39</span>              :         'type': 'movies'</span>
 <span id="L40"><span class="lineNum">      40</span>              :       };</span>
 <span id="L41"><span class="lineNum">      41</span>              : </span>
-<span id="L42"><span class="lineNum">      42</span> <span class="tlaGNC">           2 :   Movie toEntity() =&gt; Movie.watchlist(</span></span>
-<span id="L43"><span class="lineNum">      43</span> <span class="tlaGNC">           1 :         id: id,</span></span>
-<span id="L44"><span class="lineNum">      44</span> <span class="tlaGNC">           1 :         overview: overview,</span></span>
-<span id="L45"><span class="lineNum">      45</span> <span class="tlaGNC">           1 :         posterPath: posterPath,</span></span>
-<span id="L46"><span class="lineNum">      46</span> <span class="tlaGNC">           1 :         title: title,</span></span>
+<span id="L42"><span class="lineNum">      42</span> <span class="tlaGNC">           4 :   Movie toEntity() =&gt; Movie.watchlist(</span></span>
+<span id="L43"><span class="lineNum">      43</span> <span class="tlaGNC">           2 :         id: id,</span></span>
+<span id="L44"><span class="lineNum">      44</span> <span class="tlaGNC">           2 :         overview: overview,</span></span>
+<span id="L45"><span class="lineNum">      45</span> <span class="tlaGNC">           2 :         posterPath: posterPath,</span></span>
+<span id="L46"><span class="lineNum">      46</span> <span class="tlaGNC">           2 :         title: title,</span></span>
 <span id="L47"><span class="lineNum">      47</span>              :         type: 'movies',</span>
 <span id="L48"><span class="lineNum">      48</span>              :       );</span>
 <span id="L49"><span class="lineNum">      49</span>              : </span>
