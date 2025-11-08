@@ -1,14 +1,11 @@
-import 'package:dartz/dartz.dart';
-import 'package:ditonton/src/features/movie/domain/entities/movie.dart';
-import 'package:ditonton/src/features/movie/domain/repositories/movie_repository.dart';
-import 'package:ditonton/src/core/common/failure.dart';
+import 'package:ditonton/src/features/movie/presentation/blocs/bloc/now_playing_movies_bloc.dart';
 
 class GetNowPlayingMovies {
-  final MovieRepository repository;
+  final NowPlayingMoviesBloc bloc;
 
-  GetNowPlayingMovies(this.repository);
+  GetNowPlayingMovies(this.bloc);
 
-  Future<Either<Failure, List<Movie>>> execute() {
-    return repository.getNowPlayingMovies();
+  Future<void> execute() async {
+    bloc.add(NowPlayingMoviesDataLoaded());
   }
 }

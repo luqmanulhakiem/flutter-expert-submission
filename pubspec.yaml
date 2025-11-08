@@ -21,30 +21,31 @@ environment:
   sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
-
-  http: ^1.2.2
-  provider: ^6.1.2
+  bloc: ^9.1.0
+  bloc_test: ^10.0.0
+  cached_network_image: ^3.4.1
   dartz: ^0.10.1
   equatable: ^2.0.5
-  google_fonts: ^6.2.1
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^9.1.1
   flutter_rating_bar: ^4.0.1
-  cached_network_image: ^3.4.1
   get_it: ^8.2.0
-  sqflite: ^2.3.3+1
+  google_fonts: ^6.2.1
+  http: ^1.2.2
   path_provider: ^2.1.4
+  provider: ^6.1.2
+  sqflite: ^2.3.3+1
 
 dev_dependencies:
-  mockito: ^5.0.8
   build_runner: ^2.4.13
   flutter_test:
     sdk: flutter
+  mockito: ^5.0.8
   sqflite_common_ffi: ^2.3.6
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
-
 # The following section is specific to Flutter.
 flutter:
 
@@ -57,13 +58,10 @@ flutter:
   assets:
     - assets/
     - test/movies/dummy_data/now_playing.json
-
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
-
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/assets-and-images/#from-packages
-
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a

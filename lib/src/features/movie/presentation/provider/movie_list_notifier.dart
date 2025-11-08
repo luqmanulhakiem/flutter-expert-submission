@@ -1,5 +1,4 @@
 import 'package:ditonton/src/features/movie/domain/entities/movie.dart';
-import 'package:ditonton/src/features/movie/domain/usecases/get_now_playing_movies.dart';
 import 'package:ditonton/src/core/common/state_enum.dart';
 import 'package:ditonton/src/features/movie/domain/usecases/get_popular_movies.dart';
 import 'package:ditonton/src/features/movie/domain/usecases/get_top_rated_movies.dart';
@@ -28,33 +27,33 @@ class MovieListNotifier extends ChangeNotifier {
   String get message => _message;
 
   MovieListNotifier({
-    required this.getNowPlayingMovies,
+    // required this.getNowPlayingMovies,
     required this.getPopularMovies,
     required this.getTopRatedMovies,
   });
 
-  final GetNowPlayingMovies getNowPlayingMovies;
+  // final GetNowPlayingMovies getNowPlayingMovies;
   final GetPopularMovies getPopularMovies;
   final GetTopRatedMovies getTopRatedMovies;
 
-  Future<void> fetchNowPlayingMovies() async {
-    _nowPlayingState = RequestState.Loading;
-    notifyListeners();
+  // Future<void> fetchNowPlayingMovies() async {
+  //   _nowPlayingState = RequestState.Loading;
+  //   notifyListeners();
 
-    final result = await getNowPlayingMovies.execute();
-    result.fold(
-      (failure) {
-        _nowPlayingState = RequestState.Error;
-        _message = failure.message;
-        notifyListeners();
-      },
-      (moviesData) {
-        _nowPlayingState = RequestState.Loaded;
-        _nowPlayingMovies = moviesData;
-        notifyListeners();
-      },
-    );
-  }
+  //   final result = await getNowPlayingMovies.execute();
+  //   result.fold(
+  //     (failure) {
+  //       _nowPlayingState = RequestState.Error;
+  //       _message = failure.message;
+  //       notifyListeners();
+  //     },
+  //     (moviesData) {
+  //       _nowPlayingState = RequestState.Loaded;
+  //       _nowPlayingMovies = moviesData;
+  //       notifyListeners();
+  //     },
+  //   );
+  // }
 
   Future<void> fetchPopularMovies() async {
     _popularMoviesState = RequestState.Loading;

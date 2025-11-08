@@ -13,6 +13,7 @@ import 'package:ditonton/src/features/movie/domain/usecases/get_watchlist_status
 import 'package:ditonton/src/features/movie/domain/usecases/remove_watchlist.dart';
 import 'package:ditonton/src/features/movie/domain/usecases/save_watchlist.dart';
 import 'package:ditonton/src/features/movie/domain/usecases/search_movies.dart';
+import 'package:ditonton/src/features/movie/presentation/blocs/bloc/now_playing_movies_bloc.dart';
 import 'package:ditonton/src/features/movie/presentation/provider/movie_detail_notifier.dart';
 import 'package:ditonton/src/features/movie/presentation/provider/movie_list_notifier.dart';
 import 'package:ditonton/src/features/movie/presentation/provider/movie_search_notifier.dart';
@@ -48,7 +49,6 @@ void init() {
   // provider
   locator.registerFactory(
     () => MovieListNotifier(
-      getNowPlayingMovies: locator(),
       getPopularMovies: locator(),
       getTopRatedMovies: locator(),
     ),
@@ -164,6 +164,9 @@ void init() {
       () => TvSeriesRemoteDataSourceImpl(client: locator()));
   locator.registerLazySingleton<TvSeriesLocalDataSource>(
       () => TvSeriesLocalDataSourceImpl(databaseHelper: locator()));
+
+  // Blocs
+  locator.registerLazySingleton(() => NowPlayingMoviesBloc(locator()));
 
   // helper
   locator.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());

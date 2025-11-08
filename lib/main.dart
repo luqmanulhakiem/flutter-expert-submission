@@ -1,6 +1,7 @@
 import 'package:ditonton/src/core/common/constants.dart';
 import 'package:ditonton/src/core/common/utils.dart';
 import 'package:ditonton/src/core/routes/app_router.dart';
+import 'package:ditonton/src/features/movie/presentation/blocs/bloc/now_playing_movies_bloc.dart';
 import 'package:ditonton/src/features/movie/presentation/pages/home_movie_page.dart';
 import 'package:ditonton/src/features/movie/presentation/provider/movie_detail_notifier.dart';
 import 'package:ditonton/src/features/movie/presentation/provider/movie_list_notifier.dart';
@@ -15,6 +16,7 @@ import 'package:ditonton/src/features/tv/presentation/provider/tv_series_detail_
 import 'package:ditonton/src/features/tv/presentation/provider/tv_series_list_notifier.dart';
 import 'package:ditonton/src/features/tv/presentation/provider/watch_list_tv_notifer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:ditonton/injection.dart' as di;
 
@@ -49,6 +51,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => di.locator<TvSeriesListNotifier>(),
         ),
+        BlocProvider(create: (context) => di.locator<NowPlayingMoviesBloc>()),
         ChangeNotifierProvider(
           create: (_) => di.locator<TvSeriesDetailNotifier>(),
         ),
