@@ -1,11 +1,11 @@
-import 'package:ditonton/src/features/movie/presentation/blocs/watchlist_movies/watchlist_movies_bloc.dart';
+import 'package:ditonton/src/features/movie/domain/repositories/movie_repository.dart';
 
 class GetWatchListStatus {
-  final WatchlistMoviesBloc bloc;
+  final MovieRepository repository;
 
-  GetWatchListStatus(this.bloc);
+  GetWatchListStatus(this.repository);
 
-  Future<void> execute(int id) async {
-    bloc.add(WatchlistMoviesDataChecked(id: id));
+  Future<bool> execute(int id) async {
+    return repository.isAddedToWatchlist(id);
   }
 }

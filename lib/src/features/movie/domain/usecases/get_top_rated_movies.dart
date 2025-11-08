@@ -1,11 +1,14 @@
-import 'package:ditonton/src/features/movie/presentation/blocs/top_rated_movies/top_rated_movies_bloc.dart';
+import 'package:dartz/dartz.dart';
+import 'package:ditonton/src/core/common/failure.dart';
+import 'package:ditonton/src/features/movie/domain/entities/movie.dart';
+import 'package:ditonton/src/features/movie/domain/repositories/movie_repository.dart';
 
 class GetTopRatedMovies {
-  final TopRatedMoviesBloc bloc;
+  final MovieRepository repository;
 
-  GetTopRatedMovies(this.bloc);
+  GetTopRatedMovies(this.repository);
 
-  Future<void> execute() async {
-    bloc.add(TopRatedMoviesDataLoaded());
+  Future<Either<Failure, List<Movie>>> execute() {
+    return repository.getTopRatedMovies();
   }
 }

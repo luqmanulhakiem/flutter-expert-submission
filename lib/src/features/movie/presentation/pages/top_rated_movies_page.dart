@@ -1,4 +1,3 @@
-import 'package:ditonton/src/features/movie/domain/usecases/get_top_rated_movies.dart';
 import 'package:ditonton/src/features/movie/presentation/blocs/top_rated_movies/top_rated_movies_bloc.dart';
 import 'package:ditonton/src/features/movie/presentation/widgets/movie_card_list.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +18,8 @@ class _TopRatedMoviesPageState extends State<TopRatedMoviesPage> {
   }
 
   Future<void> _loadData() async {
-    final bloc = BlocProvider.of<TopRatedMoviesBloc>(context, listen: false);
-    await GetTopRatedMovies(bloc).execute();
+    BlocProvider.of<TopRatedMoviesBloc>(context, listen: false)
+        .add(TopRatedMoviesDataLoaded());
   }
 
   @override

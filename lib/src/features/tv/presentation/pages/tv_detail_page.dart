@@ -1,11 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ditonton/src/core/common/constants.dart';
 import 'package:ditonton/src/features/tv/domain/entities/tv_detail.dart';
-import 'package:ditonton/src/features/tv/domain/usecases/get_detail_tv_series.dart';
-import 'package:ditonton/src/features/tv/domain/usecases/get_recommendations_tv_series.dart';
-import 'package:ditonton/src/features/tv/domain/usecases/get_watchlist_status_tv_series.dart';
-import 'package:ditonton/src/features/tv/domain/usecases/remove_watchlist_tv_series.dart';
-import 'package:ditonton/src/features/tv/domain/usecases/save_watchlist_tv_series.dart';
 import 'package:ditonton/src/features/tv/presentation/blocs/recommendation_tv/recommendation_tv_bloc.dart';
 import 'package:ditonton/src/features/tv/presentation/blocs/tv_series/tv_series_bloc.dart';
 import 'package:ditonton/src/features/tv/presentation/blocs/watchlist_tv/watchlist_tv_bloc.dart';
@@ -25,6 +20,7 @@ class TvDetailPage extends StatefulWidget {
 }
 
 class _TvDetailPageState extends State<TvDetailPage> {
+  late WatchlistTvBloc watchlistTvBloc;
   @override
   void initState() {
     super.initState();
@@ -33,15 +29,12 @@ class _TvDetailPageState extends State<TvDetailPage> {
 
   Future<void> _loadData() async {
     // Blocs
-    final tvBloc = BlocProvider.of<TvSeriesBloc>(context, listen: false);
-    final recommendationBloc =
-        BlocProvider.of<RecommendationTvBloc>(context, listen: false);
-    final blocTv = BlocProvider.of<WatchlistTvBloc>(context, listen: false);
-
-    // Usecases
-    await GetDetailTvSeries(tvBloc).execute(widget.id);
-    await GetRecommendationsTvSeries(recommendationBloc).execute(widget.id);
-    await GetWatchlistStatusTvSeries(blocTv).execute(widget.id);
+    BlocProvider.of<TvSeriesBloc>(context, listen: false)
+        .add(TvSeriesDataSingleLoaded(id: widget.id));
+    BlocProvider.of<RecommendationTvBloc>(context, listen: false)
+        .add(RecommendationTvDataLoaded(id: widget.id));
+    watchlistTvBloc = BlocProvider.of<WatchlistTvBloc>(context, listen: false);
+    watchlistTvBloc.add(WatchlistTvDataChecked(id: widget.id));
   }
 
   @override
@@ -57,6 +50,7 @@ class _TvDetailPageState extends State<TvDetailPage> {
           return SafeArea(
             child: DetailContent(
               tv,
+              watchlistTvBloc,
             ),
           );
         } else if (state is TvSeriesSingleFailure) {}
@@ -68,8 +62,9 @@ class _TvDetailPageState extends State<TvDetailPage> {
 
 class DetailContent extends StatelessWidget {
   final TvDetail tv;
+  final WatchlistTvBloc bloc;
 
-  DetailContent(this.tv);
+  DetailContent(this.tv, this.bloc);
 
   @override
   Widget build(BuildContext context) {
@@ -136,11 +131,11 @@ class DetailContent extends StatelessWidget {
                                               listen: false);
 
                                       if (!state.isAddedToWatchlist) {
-                                        await SaveWatchlistTvSeries(bloc)
-                                            .execute(tv);
+                                        bloc.add(
+                                            WatchlistTvDataStored(data: tv));
                                       } else {
-                                        await RemoveWatchlistTvSeries(bloc)
-                                            .execute(tv);
+                                        bloc.add(
+                                            WatchlistTvDataRemoved(data: tv));
                                       }
                                     },
                                     child: Row(

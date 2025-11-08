@@ -3,6 +3,10 @@ import 'package:ditonton/src/features/movie/data/datasources/movie_local_data_so
 import 'package:ditonton/src/features/movie/data/datasources/movie_remote_data_source.dart';
 import 'package:ditonton/src/features/movie/data/models/movie_table.dart';
 import 'package:ditonton/src/features/movie/data/repositories/movie_repository_impl.dart';
+import 'package:ditonton/src/features/movie/domain/usecases/get_watchlist_movies.dart';
+import 'package:ditonton/src/features/movie/domain/usecases/get_watchlist_status.dart';
+import 'package:ditonton/src/features/movie/domain/usecases/remove_watchlist.dart';
+import 'package:ditonton/src/features/movie/domain/usecases/save_watchlist.dart';
 import 'package:ditonton/src/features/movie/presentation/blocs/watchlist_movies/watchlist_movies_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
@@ -21,6 +25,10 @@ void main() {
   late Client client;
   late MovieRepositoryImpl repositoryImpl;
   late WatchlistMoviesBloc bloc;
+  late GetWatchListStatus getWatchListStatus;
+  late GetWatchlistMovies getWatchlistMovies;
+  late SaveWatchlist saveWatchlist;
+  late RemoveWatchlist removeWatchlist;
 
   setUpAll(() {
     sqfliteFfiInit();
@@ -33,7 +41,13 @@ void main() {
     localDataSource = MockMovieLocalDataSource();
     repositoryImpl = MovieRepositoryImpl(
         remoteDataSource: remoteDataSource, localDataSource: localDataSource);
-    bloc = WatchlistMoviesBloc(repositoryImpl);
+    getWatchlistMovies = GetWatchlistMovies(repositoryImpl);
+    getWatchListStatus = GetWatchListStatus(repositoryImpl);
+    saveWatchlist = SaveWatchlist(repositoryImpl);
+    removeWatchlist = RemoveWatchlist(repositoryImpl);
+
+    bloc = WatchlistMoviesBloc(
+        getWatchListStatus, getWatchlistMovies, saveWatchlist, removeWatchlist);
   });
 
   blocTest<WatchlistMoviesBloc, WatchlistMoviesState>(

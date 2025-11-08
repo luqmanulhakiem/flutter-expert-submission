@@ -1,17 +1,17 @@
 import 'package:bloc/bloc.dart';
 import 'package:ditonton/src/features/tv/domain/entities/tv.dart';
-import 'package:ditonton/src/features/tv/domain/repositories/tv_series_repository.dart';
+import 'package:ditonton/src/features/tv/domain/usecases/get_recommendations_tv_series.dart';
 
 part 'recommendation_tv_event.dart';
 part 'recommendation_tv_state.dart';
 
 class RecommendationTvBloc
     extends Bloc<RecommendationTvEvent, RecommendationTvState> {
-  final TvSeriesRepository repository;
-  RecommendationTvBloc(this.repository) : super(RecommendationTvInitial()) {
+  final GetRecommendationsTvSeries usecase;
+  RecommendationTvBloc(this.usecase) : super(RecommendationTvInitial()) {
     on<RecommendationTvDataLoaded>((event, emit) async {
       emit(RecommendationTvInProgress());
-      final resp = await repository.getTvSeriesRecommendations(event.id);
+      final resp = await usecase.execute(event.id);
       emit(resp.fold(
         (l) => RecommendationTvFailure(message: l.message),
         (r) => RecommendationTvSuccess(data: r),

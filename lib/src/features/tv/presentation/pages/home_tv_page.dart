@@ -1,9 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ditonton/src/core/common/constants.dart';
 import 'package:ditonton/src/features/tv/domain/entities/tv.dart';
-import 'package:ditonton/src/features/tv/domain/usecases/get_now_playing_tv_series.dart';
-import 'package:ditonton/src/features/tv/domain/usecases/get_popular_tv_series.dart';
-import 'package:ditonton/src/features/tv/domain/usecases/get_top_rated_tv_series.dart';
 import 'package:ditonton/src/features/tv/presentation/blocs/now_playing_tv/now_playing_tv_bloc.dart';
 import 'package:ditonton/src/features/tv/presentation/blocs/top_rated_tv/top_rated_tv_bloc.dart';
 import 'package:ditonton/src/features/tv/presentation/blocs/tv_popular/tv_popular_bloc.dart';
@@ -31,15 +28,12 @@ class _HomeTvPageState extends State<HomeTvPage> {
 
   Future<void> _loadData() async {
     // Blocs
-    final nowPlayingBloc =
-        BlocProvider.of<NowPlayingTvBloc>(context, listen: false);
-    final popularBloc = BlocProvider.of<TvPopularBloc>(context, listen: false);
-    final tvTopRated = BlocProvider.of<TopRatedTvBloc>(context, listen: false);
-
-    // Use cases
-    await GetNowPlayingTvSeries(nowPlayingBloc).execute();
-    await GetPopularTvSeries(popularBloc).execute();
-    await GetTopRatedTvSeries(tvTopRated).execute();
+    BlocProvider.of<NowPlayingTvBloc>(context, listen: false)
+        .add(NowPlayingTvDataLoaded());
+    BlocProvider.of<TvPopularBloc>(context, listen: false)
+        .add(TvPopulaDataLoaded());
+    BlocProvider.of<TopRatedTvBloc>(context, listen: false)
+        .add(TopRatedTvDataLoaded());
   }
 
   @override

@@ -1,11 +1,14 @@
-import 'package:ditonton/src/features/tv/presentation/blocs/top_rated_tv/top_rated_tv_bloc.dart';
+import 'package:dartz/dartz.dart';
+import 'package:ditonton/src/core/common/failure.dart';
+import 'package:ditonton/src/features/tv/domain/entities/tv.dart';
+import 'package:ditonton/src/features/tv/domain/repositories/tv_series_repository.dart';
 
 class GetTopRatedTvSeries {
-  final TopRatedTvBloc bloc;
+  final TvSeriesRepository repository;
 
-  GetTopRatedTvSeries(this.bloc);
+  GetTopRatedTvSeries(this.repository);
 
-  Future<void> execute() async {
-    bloc.add(TopRatedTvDataLoaded());
+  Future<Either<Failure, List<Tv>>> execute() {
+    return repository.getTopRatedTvSeries();
   }
 }

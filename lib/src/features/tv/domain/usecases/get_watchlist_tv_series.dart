@@ -1,11 +1,14 @@
-import 'package:ditonton/src/features/tv/presentation/blocs/watchlist_tv/watchlist_tv_bloc.dart';
+import 'package:dartz/dartz.dart';
+import 'package:ditonton/src/core/common/failure.dart';
+import 'package:ditonton/src/features/tv/domain/entities/tv.dart';
+import 'package:ditonton/src/features/tv/domain/repositories/tv_series_repository.dart';
 
 class GetWatchlistTvSeries {
-  final WatchlistTvBloc bloc;
+  final TvSeriesRepository _repository;
 
-  GetWatchlistTvSeries(this.bloc);
+  GetWatchlistTvSeries(this._repository);
 
-  Future<void> execute() async {
-    bloc.add(WatchlistTvDataLoaded());
+  Future<Either<Failure, List<Tv>>> execute() {
+    return _repository.getWatchlistTvSeries();
   }
 }

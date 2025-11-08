@@ -1,5 +1,4 @@
 import 'package:ditonton/src/core/common/constants.dart';
-import 'package:ditonton/src/features/movie/domain/usecases/search_movies.dart';
 import 'package:ditonton/src/features/movie/presentation/blocs/movies/movies_bloc.dart';
 import 'package:ditonton/src/features/movie/presentation/widgets/movie_card_list.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +22,7 @@ class SearchPage extends StatelessWidget {
               onSubmitted: (query) {
                 final bloc =
                     BlocProvider.of<MoviesBloc>(context, listen: false);
-                SearchMovies(bloc).execute(query);
+                bloc.add(MoviesDataSearched(query: query));
               },
               decoration: InputDecoration(
                 hintText: 'Search title',
