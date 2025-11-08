@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ditonton/src/core/common/constants.dart';
-import 'package:ditonton/src/features/tv/domain/entities/tv.dart';
 import 'package:ditonton/src/features/tv/domain/entities/tv_detail.dart';
 import 'package:ditonton/src/features/tv/domain/usecases/get_detail_tv_series.dart';
+import 'package:ditonton/src/features/tv/domain/usecases/get_recommendations_tv_series.dart';
+import 'package:ditonton/src/features/tv/presentation/blocs/recommendation_tv/recommendation_tv_bloc.dart';
 import 'package:ditonton/src/features/tv/presentation/blocs/tv_series/tv_series_bloc.dart';
 import 'package:ditonton/src/features/tv/presentation/provider/tv_series_detail_notifier.dart';
 import 'package:ditonton/src/shared/domain/entities/genre.dart';
-import 'package:ditonton/src/core/common/state_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -38,9 +38,12 @@ class _TvDetailPageState extends State<TvDetailPage> {
   Future<void> _loadData() async {
     // Blocs
     final tvBloc = BlocProvider.of<TvSeriesBloc>(context, listen: false);
+    final recommendationBloc =
+        BlocProvider.of<RecommendationTvBloc>(context, listen: false);
 
     // Usecases
     await GetDetailTvSeries(tvBloc).execute(widget.id);
+    await GetRecommendationsTvSeries(recommendationBloc).execute(widget.id);
   }
 
   @override
@@ -56,10 +59,7 @@ class _TvDetailPageState extends State<TvDetailPage> {
           return SafeArea(
             child: DetailContent(
               movie,
-              [],
               false,
-              // provider.tvSeriesRecommendations,
-              // provider.isAddedToWatchlist,
             ),
           );
         } else if (state is TvSeriesSingleFailure) {}
@@ -71,10 +71,9 @@ class _TvDetailPageState extends State<TvDetailPage> {
 
 class DetailContent extends StatelessWidget {
   final TvDetail movie;
-  final List<Tv> recommendations;
   final bool isAddedWatchlist;
 
-  DetailContent(this.movie, this.recommendations, this.isAddedWatchlist);
+  DetailContent(this.movie, this.isAddedWatchlist);
 
   @override
   Widget build(BuildContext context) {
@@ -193,24 +192,20 @@ class DetailContent extends StatelessWidget {
                               'Recommendations',
                               style: kHeading6,
                             ),
-                            Consumer<TvSeriesDetailNotifier>(
-                              builder: (context, data, child) {
-                                if (data.recommendationState ==
-                                    RequestState.Loading) {
+                            BlocBuilder<RecommendationTvBloc,
+                                RecommendationTvState>(
+                              builder: (context, state) {
+                                if (state is RecommendationTvInProgress) {
                                   return Center(
                                     child: CircularProgressIndicator(),
                                   );
-                                } else if (data.recommendationState ==
-                                    RequestState.Error) {
-                                  return Text(data.message);
-                                } else if (data.recommendationState ==
-                                    RequestState.Loaded) {
+                                } else if (state is RecommendationTvSuccess) {
                                   return Container(
                                     height: 150,
                                     child: ListView.builder(
                                       scrollDirection: Axis.horizontal,
                                       itemBuilder: (context, index) {
-                                        final movie = recommendations[index];
+                                        final movie = state.data[index];
                                         return Padding(
                                           padding: const EdgeInsets.all(4.0),
                                           child: InkWell(
@@ -241,14 +236,15 @@ class DetailContent extends StatelessWidget {
                                           ),
                                         );
                                       },
-                                      itemCount: recommendations.length,
+                                      itemCount: state.data.length,
                                     ),
                                   );
-                                } else {
-                                  return Container();
+                                } else if (state is RecommendationTvFailure) {
+                                  return Text(state.message);
                                 }
+                                return Container();
                               },
-                            ),
+                            )
                           ],
                         ),
                       ),
