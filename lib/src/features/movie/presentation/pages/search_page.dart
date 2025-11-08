@@ -1,9 +1,9 @@
 import 'package:ditonton/src/core/common/constants.dart';
-import 'package:ditonton/src/core/common/state_enum.dart';
-import 'package:ditonton/src/features/movie/presentation/provider/movie_search_notifier.dart';
+import 'package:ditonton/src/features/movie/domain/usecases/search_movies.dart';
+import 'package:ditonton/src/features/movie/presentation/blocs/movies/movies_bloc.dart';
 import 'package:ditonton/src/features/movie/presentation/widgets/movie_card_list.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SearchPage extends StatelessWidget {
   static const ROUTE_NAME = '/search';
@@ -21,8 +21,9 @@ class SearchPage extends StatelessWidget {
           children: [
             TextField(
               onSubmitted: (query) {
-                Provider.of<MovieSearchNotifier>(context, listen: false)
-                    .fetchMovieSearch(query);
+                final bloc =
+                    BlocProvider.of<MoviesBloc>(context, listen: false);
+                SearchMovies(bloc).execute(query);
               },
               decoration: InputDecoration(
                 hintText: 'Search title',
@@ -36,29 +37,28 @@ class SearchPage extends StatelessWidget {
               'Search Result',
               style: kHeading6,
             ),
-            Consumer<MovieSearchNotifier>(
-              builder: (context, data, child) {
-                if (data.state == RequestState.Loading) {
+            BlocBuilder<MoviesBloc, MoviesState>(
+              builder: (context, state) {
+                if (state is MoviesInProgress) {
                   return Center(
                     child: CircularProgressIndicator(),
                   );
-                } else if (data.state == RequestState.Loaded) {
-                  final result = data.searchResult;
+                } else if (state is MoviesSuccess) {
+                  final result = state.data;
                   return Expanded(
                     child: ListView.builder(
                       padding: const EdgeInsets.all(8),
                       itemBuilder: (context, index) {
-                        final movie = data.searchResult[index];
+                        final movie = result[index];
                         return MovieCard(movie);
                       },
                       itemCount: result.length,
                     ),
                   );
-                } else {
-                  return Expanded(
-                    child: Container(),
-                  );
                 }
+                return Expanded(
+                  child: Container(),
+                );
               },
             ),
           ],

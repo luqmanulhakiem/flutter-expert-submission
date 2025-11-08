@@ -1,14 +1,11 @@
-import 'package:dartz/dartz.dart';
-import 'package:ditonton/src/core/common/failure.dart';
-import 'package:ditonton/src/features/movie/domain/entities/movie.dart';
-import 'package:ditonton/src/features/movie/domain/repositories/movie_repository.dart';
+import 'package:ditonton/src/features/movie/presentation/blocs/movies/movies_bloc.dart';
 
 class SearchMovies {
-  final MovieRepository repository;
+  final MoviesBloc bloc;
 
-  SearchMovies(this.repository);
+  SearchMovies(this.bloc);
 
-  Future<Either<Failure, List<Movie>>> execute(String query) {
-    return repository.searchMovies(query);
+  Future<void> execute(String query) async {
+    bloc.add(MoviesDataSearched(query: query));
   }
 }
