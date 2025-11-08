@@ -18,10 +18,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:ditonton/injection.dart' as di;
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'dart:async';
 
-void main() {
-  di.init();
-  runApp(MyApp());
+void main() async {
+  // Capture errors from non-Flutter zones
+  runZonedGuarded<Future<void>>(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    // Initialize Firebase with generated options
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
+    // Forward Flutter framework errors to Crashlytics
+    FlutterError.onError = (FlutterErrorDetails details) {
+      FlutterError.presentError(details);
+      FirebaseCrashlytics.instance.recordFlutterError(details);
+    };
+
+    di.init();
+    runApp(MyApp());
+  }, (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+  });
 }
 
 class MyApp extends StatelessWidget {
