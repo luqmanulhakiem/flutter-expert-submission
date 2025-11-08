@@ -1,11 +1,14 @@
-import 'package:ditonton/src/features/tv/presentation/blocs/recommendation_tv/recommendation_tv_bloc.dart';
+import 'package:dartz/dartz.dart';
+import 'package:ditonton/src/core/common/failure.dart';
+import 'package:ditonton/src/features/tv/domain/entities/tv.dart';
+import 'package:ditonton/src/features/tv/domain/repositories/tv_series_repository.dart';
 
 class GetRecommendationsTvSeries {
-  final RecommendationTvBloc bloc;
+  final TvSeriesRepository repository;
 
-  GetRecommendationsTvSeries(this.bloc);
+  GetRecommendationsTvSeries(this.repository);
 
-  Future<void> execute(id) async {
-    bloc.add(RecommendationTvDataLoaded(id: id));
+  Future<Either<Failure, List<Tv>>> execute(id) {
+    return repository.getTvSeriesRecommendations(id);
   }
 }

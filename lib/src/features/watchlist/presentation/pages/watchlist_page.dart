@@ -1,7 +1,6 @@
 import 'package:ditonton/src/core/common/utils.dart';
 import 'package:ditonton/src/features/movie/presentation/blocs/watchlist_movies/watchlist_movies_bloc.dart';
 import 'package:ditonton/src/features/movie/presentation/widgets/movie_card_list.dart';
-import 'package:ditonton/src/features/tv/domain/usecases/get_watchlist_tv_series.dart';
 import 'package:ditonton/src/features/tv/presentation/blocs/watchlist_tv/watchlist_tv_bloc.dart';
 import 'package:ditonton/src/features/tv/presentation/widgets/tv_card.dart';
 import 'package:flutter/material.dart';
@@ -28,10 +27,10 @@ class _WatchlistPageState extends State<WatchlistPage>
   }
 
   Future<void> _loadData() async {
-    final bloc = BlocProvider.of<WatchlistMoviesBloc>(context, listen: false);
-    final blocTv = BlocProvider.of<WatchlistTvBloc>(context, listen: false);
-    bloc.add(WatchlistMoviesDataLoaded());
-    await GetWatchlistTvSeries(blocTv).execute();
+    BlocProvider.of<WatchlistMoviesBloc>(context, listen: false)
+        .add(WatchlistMoviesDataLoaded());
+    BlocProvider.of<WatchlistTvBloc>(context, listen: false)
+        .add(WatchlistTvDataLoaded());
   }
 
   @override

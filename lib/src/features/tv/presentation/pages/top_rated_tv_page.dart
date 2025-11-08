@@ -1,4 +1,3 @@
-import 'package:ditonton/src/features/tv/domain/usecases/get_top_rated_tv_series.dart';
 import 'package:ditonton/src/features/tv/presentation/blocs/top_rated_tv/top_rated_tv_bloc.dart';
 import 'package:ditonton/src/features/tv/presentation/widgets/tv_card.dart';
 import 'package:flutter/material.dart';
@@ -19,9 +18,8 @@ class _TopRatedTvPageState extends State<TopRatedTvPage> {
   }
 
   Future<void> _loadData() async {
-    final tvTopRated = BlocProvider.of<TopRatedTvBloc>(context, listen: false);
-
-    await GetTopRatedTvSeries(tvTopRated).execute();
+    BlocProvider.of<TopRatedTvBloc>(context, listen: false)
+        .add(TopRatedTvDataLoaded());
   }
 
   @override

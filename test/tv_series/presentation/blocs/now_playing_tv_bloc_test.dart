@@ -3,6 +3,7 @@ import 'package:ditonton/src/features/movie/data/datasources/db/database_helper.
 import 'package:ditonton/src/features/tv/data/datasources/tv_series_local_data_source.dart';
 import 'package:ditonton/src/features/tv/data/datasources/tv_series_remote_data_source.dart';
 import 'package:ditonton/src/features/tv/data/repositories/tv_series_repository_impl.dart';
+import 'package:ditonton/src/features/tv/domain/usecases/get_now_playing_tv_series.dart';
 import 'package:ditonton/src/features/tv/presentation/blocs/now_playing_tv/now_playing_tv_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
@@ -18,6 +19,7 @@ void main() {
   late DatabaseHelper databaseHelper;
   late TvSeriesRepositoryImpl repositoryImpl;
   late NowPlayingTvBloc bloc;
+  late GetNowPlayingTvSeries getNowPlayingTvSeries;
   final baseURL =
       "https://api.themoviedb.org/3/tv/on_the_air?api_key=2174d146bb9c0eab47529b2e77d6b526";
 
@@ -29,7 +31,8 @@ void main() {
         TvSeriesLocalDataSourceImpl(databaseHelper: databaseHelper);
     repositoryImpl = TvSeriesRepositoryImpl(
         remoteDataSource: remoteDataSource, localDataSource: localDataSource);
-    bloc = NowPlayingTvBloc(repositoryImpl);
+    getNowPlayingTvSeries = GetNowPlayingTvSeries(repositoryImpl);
+    bloc = NowPlayingTvBloc(getNowPlayingTvSeries);
   });
 
   group("Popular Tv Bloc Test Data", () {

@@ -1,4 +1,3 @@
-import 'package:ditonton/src/features/tv/domain/usecases/get_popular_tv_series.dart';
 import 'package:ditonton/src/features/tv/presentation/blocs/tv_popular/tv_popular_bloc.dart';
 import 'package:ditonton/src/features/tv/presentation/widgets/tv_card.dart';
 import 'package:flutter/material.dart';
@@ -19,9 +18,8 @@ class _PopularTvPageState extends State<PopularTvPage> {
   }
 
   Future<void> _loadData() async {
-    final popularBloc = BlocProvider.of<TvPopularBloc>(context, listen: false);
-
-    await GetPopularTvSeries(popularBloc).execute();
+    BlocProvider.of<TvPopularBloc>(context, listen: false)
+        .add(TvPopulaDataLoaded());
   }
 
   @override

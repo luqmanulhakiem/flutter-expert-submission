@@ -1,36 +1,30 @@
-import 'package:bloc_test/bloc_test.dart';
+import 'package:dartz/dartz.dart';
+import 'package:ditonton/src/features/tv/domain/entities/tv.dart';
 import 'package:ditonton/src/features/tv/domain/usecases/get_recommendations_tv_series.dart';
-import 'package:ditonton/src/features/tv/presentation/blocs/recommendation_tv/recommendation_tv_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart' as mt;
+import 'package:mockito/mockito.dart';
 
-class MockRecommendationTvBloc
-    extends MockBloc<RecommendationTvEvent, RecommendationTvState>
-    implements RecommendationTvBloc {}
+import '../../helpers/test_helper.mocks.dart';
 
 void main() {
-  late MockRecommendationTvBloc bloc;
-  setUpAll(() {
-    mt.registerFallbackValue(RecommendationTvDataLoaded(id: 1));
-    bloc = MockRecommendationTvBloc();
+  late GetRecommendationsTvSeries usecase;
+  late MockTvSeriesRepository mockTvSeriesRepository;
+
+  setUp(() {
+    mockTvSeriesRepository = MockTvSeriesRepository();
+    usecase = GetRecommendationsTvSeries(mockTvSeriesRepository);
   });
 
-  test("GetRecommendationsTvSeries call RecommendationTvDataLoaded", () async {
-    mt.when(() => bloc.state).thenReturn(RecommendationTvInitial());
+  final tId = 1;
+  final tTv = <Tv>[];
 
-    final usecase = GetRecommendationsTvSeries(bloc);
-
-    await usecase.execute(1);
-
-    mt
-        .verify(() => bloc.add(mt.any<RecommendationTvEvent>(
-            that: isA<RecommendationTvDataLoaded>())))
-        .called(1);
-  });
-
-  test('execute must success', () async {
-    whenListen(bloc, const Stream<RecommendationTvState>.empty(),
-        initialState: RecommendationTvInitial());
-    await expectLater(GetRecommendationsTvSeries(bloc).execute(1), completes);
+  test('should get list of tv recommendations from the repository', () async {
+    // arrange
+    when(mockTvSeriesRepository.getTvSeriesRecommendations(tId))
+        .thenAnswer((_) async => Right(tTv));
+    // act
+    final result = await usecase.execute(tId);
+    // assert
+    expect(result, Right(tTv));
   });
 }

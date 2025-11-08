@@ -3,6 +3,8 @@ import 'package:ditonton/src/features/movie/data/datasources/db/database_helper.
 import 'package:ditonton/src/features/tv/data/datasources/tv_series_local_data_source.dart';
 import 'package:ditonton/src/features/tv/data/datasources/tv_series_remote_data_source.dart';
 import 'package:ditonton/src/features/tv/data/repositories/tv_series_repository_impl.dart';
+import 'package:ditonton/src/features/tv/domain/usecases/get_detail_tv_series.dart';
+import 'package:ditonton/src/features/tv/domain/usecases/search_tv_series.dart';
 import 'package:ditonton/src/features/tv/presentation/blocs/tv_series/tv_series_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
@@ -18,6 +20,8 @@ void main() {
   late DatabaseHelper databaseHelper;
   late TvSeriesRepositoryImpl repositoryImpl;
   late TvSeriesBloc bloc;
+  late SearchTvSeries searchTvSeries;
+  late GetDetailTvSeries getDetailTvSeries;
 
   setUp(() {
     client = MockHttpClient();
@@ -27,7 +31,10 @@ void main() {
         TvSeriesLocalDataSourceImpl(databaseHelper: databaseHelper);
     repositoryImpl = TvSeriesRepositoryImpl(
         remoteDataSource: remoteDataSource, localDataSource: localDataSource);
-    bloc = TvSeriesBloc(repositoryImpl);
+    searchTvSeries = SearchTvSeries(repositoryImpl);
+    getDetailTvSeries = GetDetailTvSeries(repositoryImpl);
+
+    bloc = TvSeriesBloc(searchTvSeries, getDetailTvSeries);
   });
 
   group("Search Tv", () {

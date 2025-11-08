@@ -1,5 +1,4 @@
 import 'package:ditonton/src/core/common/constants.dart';
-import 'package:ditonton/src/features/tv/domain/usecases/search_tv_series.dart';
 import 'package:ditonton/src/features/tv/presentation/blocs/tv_series/tv_series_bloc.dart';
 import 'package:ditonton/src/features/tv/presentation/widgets/tv_card.dart';
 import 'package:flutter/material.dart';
@@ -21,9 +20,8 @@ class SearchTvPage extends StatelessWidget {
           children: [
             TextField(
               onSubmitted: (query) async {
-                final bloc =
-                    BlocProvider.of<TvSeriesBloc>(context, listen: false);
-                await SearchTvSeries(bloc).execute(query);
+                BlocProvider.of<TvSeriesBloc>(context, listen: false)
+                    .add(TvSeriesDataSearched(query: query));
               },
               decoration: InputDecoration(
                 hintText: 'Search title',

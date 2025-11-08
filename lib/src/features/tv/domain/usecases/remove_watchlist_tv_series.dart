@@ -1,12 +1,14 @@
+import 'package:dartz/dartz.dart';
+import 'package:ditonton/src/core/common/failure.dart';
 import 'package:ditonton/src/features/tv/domain/entities/tv_detail.dart';
-import 'package:ditonton/src/features/tv/presentation/blocs/watchlist_tv/watchlist_tv_bloc.dart';
+import 'package:ditonton/src/features/tv/domain/repositories/tv_series_repository.dart';
 
 class RemoveWatchlistTvSeries {
-  final WatchlistTvBloc bloc;
+  final TvSeriesRepository repository;
 
-  RemoveWatchlistTvSeries(this.bloc);
+  RemoveWatchlistTvSeries(this.repository);
 
-  Future<void> execute(TvDetail tvSeries) async {
-    bloc.add(WatchlistTvDataRemoved(data: tvSeries));
+  Future<Either<Failure, String>> execute(TvDetail tvSeries) {
+    return repository.removeTvSeriesWatchlist(tvSeries);
   }
 }

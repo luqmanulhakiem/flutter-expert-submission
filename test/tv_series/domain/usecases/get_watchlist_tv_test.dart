@@ -1,35 +1,27 @@
-import 'package:bloc_test/bloc_test.dart';
+import 'package:dartz/dartz.dart';
 import 'package:ditonton/src/features/tv/domain/usecases/get_watchlist_tv_series.dart';
-import 'package:ditonton/src/features/tv/presentation/blocs/watchlist_tv/watchlist_tv_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart' as mt;
+import 'package:mockito/mockito.dart';
 
-class MockWatchlistTvBloc extends MockBloc<WatchlistTvEvent, WatchlistTvState>
-    implements WatchlistTvBloc {}
+import '../../dummy_data/dummy_objects.dart';
+import '../../helpers/test_helper.mocks.dart';
 
 void main() {
-  late MockWatchlistTvBloc bloc;
-  setUpAll(() {
-    mt.registerFallbackValue(WatchlistTvDataLoaded());
-    bloc = MockWatchlistTvBloc();
+  late GetWatchlistTvSeries usecase;
+  late MockTvSeriesRepository tvSeriesRepository;
+
+  setUp(() {
+    tvSeriesRepository = MockTvSeriesRepository();
+    usecase = GetWatchlistTvSeries(tvSeriesRepository);
   });
 
-  test("GetWatchlistTvSeries call WatchlistTvDataLoaded", () async {
-    mt.when(() => bloc.state).thenReturn(WatchlistTvInitial());
-
-    final usecase = GetWatchlistTvSeries(bloc);
-
-    await usecase.execute();
-
-    mt
-        .verify(() => bloc
-            .add(mt.any<WatchlistTvEvent>(that: isA<WatchlistTvDataLoaded>())))
-        .called(1);
-  });
-
-  test('execute must success', () async {
-    whenListen(bloc, const Stream<WatchlistTvState>.empty(),
-        initialState: WatchlistTvInitial());
-    await expectLater(GetWatchlistTvSeries(bloc).execute(), completes);
+  test('should get list of tv from the repository', () async {
+    // arrange
+    when(tvSeriesRepository.getWatchlistTvSeries())
+        .thenAnswer((_) async => Right(testTvList));
+    // act
+    final result = await usecase.execute();
+    // assert
+    expect(result, Right(testTvList));
   });
 }
