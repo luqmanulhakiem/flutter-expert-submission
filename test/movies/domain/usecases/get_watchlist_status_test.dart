@@ -1,6 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:ditonton/src/features/movie/domain/usecases/get_watchlist_status.dart';
-import 'package:ditonton/src/features/movie/presentation/blocs/top_rated_movies/top_rated_movies_bloc.dart';
 import 'package:ditonton/src/features/movie/presentation/blocs/watchlist_movies/watchlist_movies_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart' as mt;
@@ -31,7 +30,7 @@ void main() {
 
   test('execute must success', () async {
     whenListen(bloc, const Stream<WatchlistMoviesState>.empty(),
-        initialState: TopRatedMoviesInitial());
+        initialState: WatchlistMoviesInitial());
     await expectLater(GetWatchListStatus(bloc).execute(1), completes);
   });
 }

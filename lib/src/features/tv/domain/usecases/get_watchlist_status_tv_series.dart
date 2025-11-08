@@ -1,11 +1,11 @@
-import 'package:ditonton/src/features/tv/domain/repositories/tv_series_repository.dart';
+import 'package:ditonton/src/features/tv/presentation/blocs/watchlist_tv/watchlist_tv_bloc.dart';
 
 class GetWatchlistStatusTvSeries {
-  final TvSeriesRepository repository;
+  final WatchlistTvBloc bloc;
 
-  GetWatchlistStatusTvSeries(this.repository);
+  GetWatchlistStatusTvSeries(this.bloc);
 
-  Future<bool> execute(int id) async {
-    return repository.isTvSeriesAddedToWatchlist(id);
+  Future<void> execute(int id) async {
+    bloc.add(WatchlistTvDataChecked(id: id));
   }
 }

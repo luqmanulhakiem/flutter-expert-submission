@@ -13,8 +13,7 @@ import 'package:ditonton/src/features/tv/presentation/blocs/recommendation_tv/re
 import 'package:ditonton/src/features/tv/presentation/blocs/top_rated_tv/top_rated_tv_bloc.dart';
 import 'package:ditonton/src/features/tv/presentation/blocs/tv_popular/tv_popular_bloc.dart';
 import 'package:ditonton/src/features/tv/presentation/blocs/tv_series/tv_series_bloc.dart';
-import 'package:ditonton/src/features/tv/presentation/provider/tv_series_detail_notifier.dart';
-import 'package:ditonton/src/features/tv/presentation/provider/watch_list_tv_notifer.dart';
+import 'package:ditonton/src/features/tv/presentation/blocs/watchlist_tv/watchlist_tv_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -42,12 +41,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => di.locator<TopRatedTvBloc>()),
         BlocProvider(create: (context) => di.locator<TvSeriesBloc>()),
         BlocProvider(create: (context) => di.locator<RecommendationTvBloc>()),
-        ChangeNotifierProvider(
-          create: (_) => di.locator<TvSeriesDetailNotifier>(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => di.locator<WatchListTvNotifer>(),
-        ),
+        BlocProvider(create: (context) => di.locator<WatchlistTvBloc>()),
       ],
       child: MaterialApp(
         title: 'ElqiFlix',

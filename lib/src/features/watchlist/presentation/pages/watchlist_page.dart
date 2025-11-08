@@ -1,13 +1,12 @@
-import 'package:ditonton/src/core/common/state_enum.dart';
 import 'package:ditonton/src/core/common/utils.dart';
 import 'package:ditonton/src/features/movie/domain/usecases/get_watchlist_movies.dart';
 import 'package:ditonton/src/features/movie/presentation/blocs/watchlist_movies/watchlist_movies_bloc.dart';
 import 'package:ditonton/src/features/movie/presentation/widgets/movie_card_list.dart';
-import 'package:ditonton/src/features/tv/presentation/provider/watch_list_tv_notifer.dart';
+import 'package:ditonton/src/features/tv/domain/usecases/get_watchlist_tv_series.dart';
+import 'package:ditonton/src/features/tv/presentation/blocs/watchlist_tv/watchlist_tv_bloc.dart';
 import 'package:ditonton/src/features/tv/presentation/widgets/tv_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 
 class WatchlistPage extends StatefulWidget {
   static const ROUTE_NAME = '/watchlist';
@@ -26,15 +25,15 @@ class _WatchlistPageState extends State<WatchlistPage>
   void initState() {
     super.initState();
     _loadData();
-    Future.microtask(() =>
-        Provider.of<WatchListTvNotifer>(context, listen: false)
-            .fetchWatchlistTv());
     _tabController = TabController(length: 2, vsync: this);
   }
 
   Future<void> _loadData() async {
     final bloc = BlocProvider.of<WatchlistMoviesBloc>(context, listen: false);
+    final blocTv = BlocProvider.of<WatchlistTvBloc>(context, listen: false);
+
     await GetWatchlistMovies(bloc).execute();
+    await GetWatchlistTvSeries(blocTv).execute();
   }
 
   @override
@@ -45,7 +44,6 @@ class _WatchlistPageState extends State<WatchlistPage>
 
   void didPopNext() {
     _loadData();
-    Provider.of<WatchListTvNotifer>(context, listen: false).fetchWatchlistTv();
   }
 
   @override
@@ -92,32 +90,31 @@ class _WatchlistPageState extends State<WatchlistPage>
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Consumer<WatchListTvNotifer>(
-                    builder: (context, data, child) {
-                      if (data.watchlistState == RequestState.Loading) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else if (data.watchlistState == RequestState.Loaded) {
-                        print(data.watchlistTv.length);
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            final tv = data.watchlistTv[index];
-                            return TvCard(tv);
-                          },
-                          itemCount: data.watchlistTv.length,
-                        );
-                      } else {
-                        return Center(
-                          key: Key('error_message'),
-                          child: Text(data.message),
-                        );
-                      }
-                    },
-                  ),
-                ),
+                    padding: const EdgeInsets.all(8.0),
+                    child: BlocBuilder<WatchlistTvBloc, WatchlistTvState>(
+                      builder: (context, state) {
+                        if (state is WatchlistTvDataInProgress) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (state is WatchlistTvDataSuccess) {
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              final tv = state.data[index];
+                              return TvCard(tv);
+                            },
+                            itemCount: state.data.length,
+                          );
+                        } else if (state is WatchlistTvDataFailure) {
+                          return Center(
+                            key: Key('error_message'),
+                            child: Text(state.message),
+                          );
+                        }
+                        return Container();
+                      },
+                    )),
               ],
             ),
           ),
