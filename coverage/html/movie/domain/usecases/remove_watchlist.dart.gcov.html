@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Test Date:</td>
-            <td class="headerValue">2025-11-08 15:28:41</td>
+            <td class="headerValue">2025-11-09 02:18:30</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntryHi">-</td>
@@ -66,10 +66,10 @@
 <span id="L4"><span class="lineNum">       4</span>              : class RemoveWatchlist {</span>
 <span id="L5"><span class="lineNum">       5</span>              :   final WatchlistMoviesBloc bloc;</span>
 <span id="L6"><span class="lineNum">       6</span>              : </span>
-<span id="L7"><span class="lineNum">       7</span> <span class="tlaGNC">           1 :   RemoveWatchlist(this.bloc);</span></span>
+<span id="L7"><span class="lineNum">       7</span> <span class="tlaGNC">           2 :   RemoveWatchlist(this.bloc);</span></span>
 <span id="L8"><span class="lineNum">       8</span>              : </span>
-<span id="L9"><span class="lineNum">       9</span> <span class="tlaGNC">           1 :   Future&lt;void&gt; execute(MovieDetail movie) async {</span></span>
-<span id="L10"><span class="lineNum">      10</span> <span class="tlaGNC">           3 :     bloc.add(WatchlistMoviesDataRemoved(data: movie));</span></span>
+<span id="L9"><span class="lineNum">       9</span> <span class="tlaGNC">           2 :   Future&lt;void&gt; execute(MovieDetail movie) async {</span></span>
+<span id="L10"><span class="lineNum">      10</span> <span class="tlaGNC">           6 :     bloc.add(WatchlistMoviesDataRemoved(data: movie));</span></span>
 <span id="L11"><span class="lineNum">      11</span>              :   }</span>
 <span id="L12"><span class="lineNum">      12</span>              : }</span>
         </pre>
