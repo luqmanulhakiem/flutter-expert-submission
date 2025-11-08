@@ -1,5 +1,4 @@
 import 'package:ditonton/src/core/common/utils.dart';
-import 'package:ditonton/src/features/movie/domain/usecases/get_watchlist_movies.dart';
 import 'package:ditonton/src/features/movie/presentation/blocs/watchlist_movies/watchlist_movies_bloc.dart';
 import 'package:ditonton/src/features/movie/presentation/widgets/movie_card_list.dart';
 import 'package:ditonton/src/features/tv/domain/usecases/get_watchlist_tv_series.dart';
@@ -31,8 +30,7 @@ class _WatchlistPageState extends State<WatchlistPage>
   Future<void> _loadData() async {
     final bloc = BlocProvider.of<WatchlistMoviesBloc>(context, listen: false);
     final blocTv = BlocProvider.of<WatchlistTvBloc>(context, listen: false);
-
-    await GetWatchlistMovies(bloc).execute();
+    bloc.add(WatchlistMoviesDataLoaded());
     await GetWatchlistTvSeries(blocTv).execute();
   }
 

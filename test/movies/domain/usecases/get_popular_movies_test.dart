@@ -1,36 +1,35 @@
-import 'package:bloc_test/bloc_test.dart';
+import 'package:dartz/dartz.dart';
+import 'package:ditonton/src/features/movie/domain/entities/movie.dart';
 import 'package:ditonton/src/features/movie/domain/usecases/get_popular_movies.dart';
-import 'package:ditonton/src/features/movie/presentation/blocs/popular_movies/popular_movies_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart' as mt;
+import 'package:mockito/mockito.dart';
 
-class MockNowPlayingMoviesBloc
-    extends MockBloc<PopularMoviesEvent, PopularMoviesState>
-    implements PopularMoviesBloc {}
+import '../../helpers/test_helper.mocks.dart';
 
 void main() {
-  late MockNowPlayingMoviesBloc bloc;
-  setUpAll(() {
-    mt.registerFallbackValue(PopularMoviesDataLoaded());
-    bloc = MockNowPlayingMoviesBloc();
+  late GetPopularMovies usecase;
+  late MockMovieRepository mockMovieRpository;
+
+  setUp(() {
+    mockMovieRpository = MockMovieRepository();
+    usecase = GetPopularMovies(mockMovieRpository);
   });
 
-  test("GetPopularMovies call PopularMoviesDataLoaded", () async {
-    mt.when(() => bloc.state).thenReturn(PopularMoviesInitial());
+  final tMovies = <Movie>[];
 
-    final usecase = GetPopularMovies(bloc);
-
-    await usecase.execute();
-
-    mt
-        .verify(() => bloc.add(
-            mt.any<PopularMoviesEvent>(that: isA<PopularMoviesDataLoaded>())))
-        .called(1);
-  });
-
-  test('execute must success', () async {
-    whenListen(bloc, const Stream<PopularMoviesState>.empty(),
-        initialState: PopularMoviesInitial());
-    await expectLater(GetPopularMovies(bloc).execute(), completes);
+  group('GetPopularMovies Tests', () {
+    group('execute', () {
+      test(
+          'should get list of movies from the repository when execute function is called',
+          () async {
+        // arrange
+        when(mockMovieRpository.getPopularMovies())
+            .thenAnswer((_) async => Right(tMovies));
+        // act
+        final result = await usecase.execute();
+        // assert
+        expect(result, Right(tMovies));
+      });
+    });
   });
 }

@@ -3,6 +3,7 @@ import 'package:ditonton/src/features/movie/data/datasources/db/database_helper.
 import 'package:ditonton/src/features/movie/data/datasources/movie_local_data_source.dart';
 import 'package:ditonton/src/features/movie/data/datasources/movie_remote_data_source.dart';
 import 'package:ditonton/src/features/movie/data/repositories/movie_repository_impl.dart';
+import 'package:ditonton/src/features/movie/domain/usecases/get_popular_movies.dart';
 import 'package:ditonton/src/features/movie/presentation/blocs/popular_movies/popular_movies_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
@@ -18,6 +19,7 @@ void main() {
   late DatabaseHelper databaseHelper;
   late MovieRepositoryImpl repositoryImpl;
   late PopularMoviesBloc bloc;
+  late GetPopularMovies getPopularMovies;
   final baseURL =
       "https://api.themoviedb.org/3/movie/popular?api_key=2174d146bb9c0eab47529b2e77d6b526";
 
@@ -28,7 +30,8 @@ void main() {
     localDataSource = MovieLocalDataSourceImpl(databaseHelper: databaseHelper);
     repositoryImpl = MovieRepositoryImpl(
         remoteDataSource: remoteDataSource, localDataSource: localDataSource);
-    bloc = PopularMoviesBloc(repositoryImpl);
+    getPopularMovies = GetPopularMovies(repositoryImpl);
+    bloc = PopularMoviesBloc(getPopularMovies);
   });
 
   group("Popular Movies Bloc Test Data", () {

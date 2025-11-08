@@ -1,36 +1,27 @@
-import 'package:bloc_test/bloc_test.dart';
+import 'package:dartz/dartz.dart';
 import 'package:ditonton/src/features/movie/domain/usecases/get_watchlist_movies.dart';
-import 'package:ditonton/src/features/movie/presentation/blocs/watchlist_movies/watchlist_movies_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart' as mt;
+import 'package:mockito/mockito.dart';
 
-class MockWatchlistMoviesBloc
-    extends MockBloc<WatchlistMoviesEvent, WatchlistMoviesState>
-    implements WatchlistMoviesBloc {}
+import '../../dummy_data/dummy_objects.dart';
+import '../../helpers/test_helper.mocks.dart';
 
 void main() {
-  late MockWatchlistMoviesBloc bloc;
-  setUpAll(() {
-    mt.registerFallbackValue(WatchlistMoviesDataLoaded());
-    bloc = MockWatchlistMoviesBloc();
+  late GetWatchlistMovies usecase;
+  late MockMovieRepository mockMovieRepository;
+
+  setUp(() {
+    mockMovieRepository = MockMovieRepository();
+    usecase = GetWatchlistMovies(mockMovieRepository);
   });
 
-  test("GetWatchlistMovies call WatchlistMoviesDataLoaded", () async {
-    mt.when(() => bloc.state).thenReturn(WatchlistMoviesInitial());
-
-    final usecase = GetWatchlistMovies(bloc);
-
-    await usecase.execute();
-
-    mt
-        .verify(() => bloc.add(mt.any<WatchlistMoviesEvent>(
-            that: isA<WatchlistMoviesDataLoaded>())))
-        .called(1);
-  });
-
-  test('execute must success', () async {
-    whenListen(bloc, const Stream<WatchlistMoviesState>.empty(),
-        initialState: WatchlistMoviesInitial());
-    await expectLater(GetWatchlistMovies(bloc).execute(), completes);
+  test('should get list of movies from the repository', () async {
+    // arrange
+    when(mockMovieRepository.getWatchlistMovies())
+        .thenAnswer((_) async => Right(testMovieList));
+    // act
+    final result = await usecase.execute();
+    // assert
+    expect(result, Right(testMovieList));
   });
 }

@@ -95,9 +95,10 @@ void init() {
   locator.registerLazySingleton(() => NowPlayingMoviesBloc(locator()));
   locator.registerLazySingleton(() => PopularMoviesBloc(locator()));
   locator.registerLazySingleton(() => TopRatedMoviesBloc(locator()));
-  locator.registerLazySingleton(() => MoviesBloc(locator()));
+  locator.registerLazySingleton(() => MoviesBloc(locator(), locator()));
   locator.registerLazySingleton(() => RecommendationMoviesBloc(locator()));
-  locator.registerLazySingleton(() => WatchlistMoviesBloc(locator()));
+  locator.registerLazySingleton(
+      () => WatchlistMoviesBloc(locator(), locator(), locator(), locator()));
 
   locator.registerLazySingleton(() => NowPlayingTvBloc(locator()));
   locator.registerLazySingleton(() => TvPopularBloc(locator()));

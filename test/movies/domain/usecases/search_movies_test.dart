@@ -1,35 +1,30 @@
-import 'package:bloc_test/bloc_test.dart';
+import 'package:dartz/dartz.dart';
+import 'package:ditonton/src/features/movie/domain/entities/movie.dart';
 import 'package:ditonton/src/features/movie/domain/usecases/search_movies.dart';
-import 'package:ditonton/src/features/movie/presentation/blocs/movies/movies_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart' as mt;
+import 'package:mockito/mockito.dart';
 
-class MockMoviesBloc extends MockBloc<MoviesEvent, MoviesState>
-    implements MoviesBloc {}
+import '../../helpers/test_helper.mocks.dart';
 
 void main() {
-  late MockMoviesBloc bloc;
-  setUpAll(() {
-    mt.registerFallbackValue(MoviesDataSearched(query: "Spiderman"));
-    bloc = MockMoviesBloc();
+  late SearchMovies usecase;
+  late MockMovieRepository mockMovieRepository;
+
+  setUp(() {
+    mockMovieRepository = MockMovieRepository();
+    usecase = SearchMovies(mockMovieRepository);
   });
 
-  test("SearchMovies call MoviesDataSearched", () async {
-    mt.when(() => bloc.state).thenReturn(MoviesInitial());
+  final tMovies = <Movie>[];
+  final tQuery = 'Spiderman';
 
-    final usecase = SearchMovies(bloc);
-
-    await usecase.execute("Spiderman");
-
-    mt
-        .verify(() =>
-            bloc.add(mt.any<MoviesEvent>(that: isA<MoviesDataSearched>())))
-        .called(1);
-  });
-
-  test('execute must success', () async {
-    whenListen(bloc, const Stream<MoviesState>.empty(),
-        initialState: MoviesInitial());
-    await expectLater(SearchMovies(bloc).execute("Spiderman"), completes);
+  test('should get list of movies from the repository', () async {
+    // arrange
+    when(mockMovieRepository.searchMovies(tQuery))
+        .thenAnswer((_) async => Right(tMovies));
+    // act
+    final result = await usecase.execute(tQuery);
+    // assert
+    expect(result, Right(tMovies));
   });
 }

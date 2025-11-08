@@ -3,6 +3,8 @@ import 'package:ditonton/src/features/movie/data/datasources/db/database_helper.
 import 'package:ditonton/src/features/movie/data/datasources/movie_local_data_source.dart';
 import 'package:ditonton/src/features/movie/data/datasources/movie_remote_data_source.dart';
 import 'package:ditonton/src/features/movie/data/repositories/movie_repository_impl.dart';
+import 'package:ditonton/src/features/movie/domain/usecases/get_movie_detail.dart';
+import 'package:ditonton/src/features/movie/domain/usecases/search_movies.dart';
 import 'package:ditonton/src/features/movie/presentation/blocs/movies/movies_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
@@ -18,6 +20,8 @@ void main() {
   late DatabaseHelper databaseHelper;
   late MovieRepositoryImpl repositoryImpl;
   late MoviesBloc bloc;
+  late GetMovieDetail getMovieDetail;
+  late SearchMovies searchMovies;
 
   setUp(() {
     client = MockHttpClient();
@@ -26,7 +30,9 @@ void main() {
     localDataSource = MovieLocalDataSourceImpl(databaseHelper: databaseHelper);
     repositoryImpl = MovieRepositoryImpl(
         remoteDataSource: remoteDataSource, localDataSource: localDataSource);
-    bloc = MoviesBloc(repositoryImpl);
+    getMovieDetail = GetMovieDetail(repositoryImpl);
+    searchMovies = SearchMovies(repositoryImpl);
+    bloc = MoviesBloc(getMovieDetail, searchMovies);
   });
 
   group("Search Movie", () {

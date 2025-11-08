@@ -1,10 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ditonton/src/core/common/constants.dart';
-import 'package:ditonton/src/features/movie/domain/usecases/get_movie_detail.dart';
-import 'package:ditonton/src/features/movie/domain/usecases/get_movie_recommendations.dart';
-import 'package:ditonton/src/features/movie/domain/usecases/get_watchlist_status.dart';
-import 'package:ditonton/src/features/movie/domain/usecases/remove_watchlist.dart';
-import 'package:ditonton/src/features/movie/domain/usecases/save_watchlist.dart';
 import 'package:ditonton/src/features/movie/presentation/blocs/movies/movies_bloc.dart';
 import 'package:ditonton/src/features/movie/presentation/blocs/recommendation_movies/recommendation_movies_bloc.dart';
 import 'package:ditonton/src/features/movie/presentation/blocs/watchlist_movies/watchlist_movies_bloc.dart';
@@ -26,6 +21,7 @@ class MovieDetailPage extends StatefulWidget {
 
 class _MovieDetailPageState extends State<MovieDetailPage> {
   bool isAddedToWatchlist = false;
+  late WatchlistMoviesBloc watchlistMoviesBloc;
   @override
   void initState() {
     super.initState();
@@ -37,13 +33,12 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
     final moviesBloc = BlocProvider.of<MoviesBloc>(context, listen: false);
     final recommendationMoviesBloc =
         BlocProvider.of<RecommendationMoviesBloc>(context, listen: false);
-    final watchlistBloc =
+    watchlistMoviesBloc =
         BlocProvider.of<WatchlistMoviesBloc>(context, listen: false);
 
-    // UseCases
-    await GetMovieDetail(moviesBloc).execute(widget.id);
-    await GetMovieRecommendations(recommendationMoviesBloc).execute(widget.id);
-    await GetWatchListStatus(watchlistBloc).execute(widget.id);
+    moviesBloc.add(MoviesDataSingleLoaded(id: widget.id));
+    recommendationMoviesBloc.add(RecommendationMoviesDataLoaded(id: widget.id));
+    watchlistMoviesBloc.add(WatchlistMoviesDataChecked(id: widget.id));
   }
 
   @override
@@ -63,9 +58,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
           } else if (state is MoviesSingleSuccess) {
             final movie = state.data;
             return SafeArea(
-              child: DetailContent(
-                movie,
-              ),
+              child: DetailContent(movie, watchlistMoviesBloc),
             );
           } else if (state is MoviesSingleFailure) {
             return Text(state.message);
@@ -79,8 +72,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
 
 class DetailContent extends StatelessWidget {
   final MovieDetail movie;
-
-  DetailContent(this.movie);
+  final WatchlistMoviesBloc bloc;
+  DetailContent(this.movie, this.bloc);
 
   @override
   Widget build(BuildContext context) {
@@ -151,11 +144,11 @@ class DetailContent extends StatelessWidget {
                                               context,
                                               listen: false);
                                       if (!state.isAddedToWatchlist) {
-                                        await SaveWatchlist(bloc)
-                                            .execute(movie);
+                                        bloc.add(WatchlistMoviesDataStored(
+                                            data: movie));
                                       } else {
-                                        await RemoveWatchlist(bloc)
-                                            .execute(movie);
+                                        bloc.add(WatchlistMoviesDataRemoved(
+                                            data: movie));
                                       }
                                     },
                                     child: Row(

@@ -1,36 +1,29 @@
-import 'package:bloc_test/bloc_test.dart';
+import 'package:dartz/dartz.dart';
+import 'package:ditonton/src/features/movie/domain/entities/movie.dart';
 import 'package:ditonton/src/features/movie/domain/usecases/get_top_rated_movies.dart';
-import 'package:ditonton/src/features/movie/presentation/blocs/top_rated_movies/top_rated_movies_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart' as mt;
+import 'package:mockito/mockito.dart';
 
-class MockTopRatedMoviesBloc
-    extends MockBloc<TopRatedMoviesEvent, TopRatedMoviesState>
-    implements TopRatedMoviesBloc {}
+import '../../helpers/test_helper.mocks.dart';
 
 void main() {
-  late MockTopRatedMoviesBloc bloc;
-  setUpAll(() {
-    mt.registerFallbackValue(TopRatedMoviesDataLoaded());
-    bloc = MockTopRatedMoviesBloc();
+  late GetTopRatedMovies usecase;
+  late MockMovieRepository mockMovieRepository;
+
+  setUp(() {
+    mockMovieRepository = MockMovieRepository();
+    usecase = GetTopRatedMovies(mockMovieRepository);
   });
 
-  test("GetTopRatedMovies call TopRatedMoviesDataLoaded", () async {
-    mt.when(() => bloc.state).thenReturn(TopRatedMoviesInitial());
+  final tMovies = <Movie>[];
 
-    final usecase = GetTopRatedMovies(bloc);
-
-    await usecase.execute();
-
-    mt
-        .verify(() => bloc.add(
-            mt.any<TopRatedMoviesEvent>(that: isA<TopRatedMoviesDataLoaded>())))
-        .called(1);
-  });
-
-  test('execute must success', () async {
-    whenListen(bloc, const Stream<TopRatedMoviesState>.empty(),
-        initialState: TopRatedMoviesInitial());
-    await expectLater(GetTopRatedMovies(bloc).execute(), completes);
+  test('should get list of movies from repository', () async {
+    // arrange
+    when(mockMovieRepository.getTopRatedMovies())
+        .thenAnswer((_) async => Right(tMovies));
+    // act
+    final result = await usecase.execute();
+    // assert
+    expect(result, Right(tMovies));
   });
 }

@@ -1,4 +1,3 @@
-import 'package:ditonton/src/features/movie/domain/usecases/get_popular_movies.dart';
 import 'package:ditonton/src/features/movie/presentation/blocs/popular_movies/popular_movies_bloc.dart';
 import 'package:ditonton/src/features/movie/presentation/widgets/movie_card_list.dart';
 import 'package:flutter/material.dart';
@@ -16,15 +15,12 @@ class _PopularMoviesPageState extends State<PopularMoviesPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => _loadData());
+    _loadData();
   }
 
   Future<void> _loadData() async {
-    // Bloc
-    bloc = BlocProvider.of<PopularMoviesBloc>(context, listen: false);
-
-    // Call Usecases
-    await GetPopularMovies(bloc).execute();
+    BlocProvider.of<PopularMoviesBloc>(context, listen: false)
+        .add(PopularMoviesDataLoaded());
   }
 
   @override

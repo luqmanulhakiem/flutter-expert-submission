@@ -1,11 +1,14 @@
-import 'package:ditonton/src/features/movie/presentation/blocs/recommendation_movies/recommendation_movies_bloc.dart';
+import 'package:dartz/dartz.dart';
+import 'package:ditonton/src/features/movie/domain/entities/movie.dart';
+import 'package:ditonton/src/features/movie/domain/repositories/movie_repository.dart';
+import 'package:ditonton/src/core/common/failure.dart';
 
 class GetMovieRecommendations {
-  final RecommendationMoviesBloc bloc;
+  final MovieRepository repository;
 
-  GetMovieRecommendations(this.bloc);
+  GetMovieRecommendations(this.repository);
 
-  Future<void> execute(id) async {
-    bloc.add(RecommendationMoviesDataLoaded(id: id));
+  Future<Either<Failure, List<Movie>>> execute(id) {
+    return repository.getMovieRecommendations(id);
   }
 }

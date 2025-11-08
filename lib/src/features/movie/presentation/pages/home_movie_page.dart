@@ -1,9 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ditonton/src/core/common/constants.dart';
 import 'package:ditonton/src/features/movie/domain/entities/movie.dart';
-import 'package:ditonton/src/features/movie/domain/usecases/get_now_playing_movies.dart';
-import 'package:ditonton/src/features/movie/domain/usecases/get_popular_movies.dart';
-import 'package:ditonton/src/features/movie/domain/usecases/get_top_rated_movies.dart';
 import 'package:ditonton/src/features/movie/presentation/blocs/now_playing_movies/now_playing_movies_bloc.dart';
 import 'package:ditonton/src/features/movie/presentation/blocs/popular_movies/popular_movies_bloc.dart';
 import 'package:ditonton/src/features/movie/presentation/blocs/top_rated_movies/top_rated_movies_bloc.dart';
@@ -34,7 +31,6 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
   }
 
   Future<void> _loadData() async {
-    // Bloc
     nowPlayingMoviesBloc =
         BlocProvider.of<NowPlayingMoviesBloc>(context, listen: false);
     popularMoviesBloc =
@@ -42,10 +38,9 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
     topRatedMoviesBloc =
         BlocProvider.of<TopRatedMoviesBloc>(context, listen: false);
 
-    // Call Usecases
-    await GetNowPlayingMovies(nowPlayingMoviesBloc).execute();
-    await GetPopularMovies(popularMoviesBloc).execute();
-    await GetTopRatedMovies(topRatedMoviesBloc).execute();
+    nowPlayingMoviesBloc.add(NowPlayingMoviesDataLoaded());
+    popularMoviesBloc.add(PopularMoviesDataLoaded());
+    topRatedMoviesBloc.add(TopRatedMoviesDataLoaded());
   }
 
   @override

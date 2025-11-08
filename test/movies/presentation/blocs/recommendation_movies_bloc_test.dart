@@ -3,6 +3,7 @@ import 'package:ditonton/src/features/movie/data/datasources/db/database_helper.
 import 'package:ditonton/src/features/movie/data/datasources/movie_local_data_source.dart';
 import 'package:ditonton/src/features/movie/data/datasources/movie_remote_data_source.dart';
 import 'package:ditonton/src/features/movie/data/repositories/movie_repository_impl.dart';
+import 'package:ditonton/src/features/movie/domain/usecases/get_movie_recommendations.dart';
 import 'package:ditonton/src/features/movie/presentation/blocs/recommendation_movies/recommendation_movies_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
@@ -17,6 +18,7 @@ void main() {
   late Client client;
   late DatabaseHelper databaseHelper;
   late MovieRepositoryImpl repositoryImpl;
+  late GetMovieRecommendations getMovieRecommendations;
   late RecommendationMoviesBloc bloc;
   final baseURL =
       "https://api.themoviedb.org/3/movie/1/recommendations?api_key=2174d146bb9c0eab47529b2e77d6b526";
@@ -27,7 +29,8 @@ void main() {
     localDataSource = MovieLocalDataSourceImpl(databaseHelper: databaseHelper);
     repositoryImpl = MovieRepositoryImpl(
         remoteDataSource: remoteDataSource, localDataSource: localDataSource);
-    bloc = RecommendationMoviesBloc(repositoryImpl);
+    getMovieRecommendations = GetMovieRecommendations(repositoryImpl);
+    bloc = RecommendationMoviesBloc(getMovieRecommendations);
   });
 
   group("Get Recommendations Movies", () {
