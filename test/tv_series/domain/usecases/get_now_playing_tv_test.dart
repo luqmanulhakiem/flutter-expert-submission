@@ -1,29 +1,36 @@
-import 'package:dartz/dartz.dart';
-import 'package:ditonton/src/features/tv/domain/entities/tv.dart';
+import 'package:bloc_test/bloc_test.dart';
 import 'package:ditonton/src/features/tv/domain/usecases/get_now_playing_tv_series.dart';
+import 'package:ditonton/src/features/tv/presentation/blocs/now_playing_tv/now_playing_tv_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart' as mt;
 
-import '../../helpers/test_helper.mocks.dart';
+class MockNowPlayingTvBloc
+    extends MockBloc<NowPlayingTvEvent, NowPlayingTvState>
+    implements NowPlayingTvBloc {}
 
 void main() {
-  late GetNowPlayingTvSeries usecase;
-  late MockTvSeriesRepository mockMovieRepository;
-
-  setUp(() {
-    mockMovieRepository = MockTvSeriesRepository();
-    usecase = GetNowPlayingTvSeries(mockMovieRepository);
+  late MockNowPlayingTvBloc bloc;
+  setUpAll(() {
+    mt.registerFallbackValue(NowPlayingTvDataLoaded());
+    bloc = MockNowPlayingTvBloc();
   });
 
-  final tTv = <Tv>[];
+  test("GetNowPlayingTvSeries call NowPlayingTvDataLoaded", () async {
+    mt.when(() => bloc.state).thenReturn(NowPlayingTvInitial());
 
-  test('should get list of tv series from the repository', () async {
-    // arrange
-    when(mockMovieRepository.getNowPlayingTvSeries())
-        .thenAnswer((_) async => Right(tTv));
-    // act
-    final result = await usecase.execute();
-    // assert
-    expect(result, Right(tTv));
+    final usecase = GetNowPlayingTvSeries(bloc);
+
+    await usecase.execute();
+
+    mt
+        .verify(() => bloc.add(
+            mt.any<NowPlayingTvEvent>(that: isA<NowPlayingTvDataLoaded>())))
+        .called(1);
+  });
+
+  test('execute must success', () async {
+    whenListen(bloc, const Stream<NowPlayingTvState>.empty(),
+        initialState: NowPlayingTvInitial());
+    await expectLater(GetNowPlayingTvSeries(bloc).execute(), completes);
   });
 }

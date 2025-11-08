@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ditonton/src/core/common/constants.dart';
 import 'package:ditonton/src/core/common/state_enum.dart';
 import 'package:ditonton/src/features/tv/domain/entities/tv.dart';
+import 'package:ditonton/src/features/tv/domain/usecases/get_now_playing_tv_series.dart';
+import 'package:ditonton/src/features/tv/presentation/blocs/now_playing_tv/now_playing_tv_bloc.dart';
 import 'package:ditonton/src/features/tv/presentation/pages/popular_tv_page.dart';
 import 'package:ditonton/src/features/tv/presentation/pages/search_tv_page.dart';
 import 'package:ditonton/src/features/tv/presentation/pages/top_rated_tv_page.dart';
@@ -9,6 +11,7 @@ import 'package:ditonton/src/features/tv/presentation/pages/tv_detail_page.dart'
 import 'package:ditonton/src/features/tv/presentation/provider/tv_series_list_notifier.dart';
 import 'package:ditonton/src/shared/presentation/widgets/drawer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class HomeTvPage extends StatefulWidget {
@@ -22,12 +25,22 @@ class _HomeTvPageState extends State<HomeTvPage> {
   @override
   void initState() {
     super.initState();
+    _loadData();
     Future.microtask(
       () => Provider.of<TvSeriesListNotifier>(context, listen: false)
-        ..fetchNowPlayingTvSeries()
+        // ..fetchNowPlayingTvSeries()
         ..fetchTopRatedTvSeries()
         ..fetchPopularTvSeries(),
     );
+  }
+
+  Future<void> _loadData() async {
+    // Blocs
+    final nowPlayingBloc =
+        BlocProvider.of<NowPlayingTvBloc>(context, listen: false);
+
+    // Use cases
+    await GetNowPlayingTvSeries(nowPlayingBloc).execute();
   }
 
   @override
@@ -55,18 +68,18 @@ class _HomeTvPageState extends State<HomeTvPage> {
                 'Now Playing',
                 style: kHeading6,
               ),
-              Consumer<TvSeriesListNotifier>(builder: (context, data, child) {
-                final state = data.nowPlayingState;
-                if (state == RequestState.Loading) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (state == RequestState.Loaded) {
-                  return TvSeries(data.nowPlayingTvSeries);
-                } else {
+              BlocBuilder<NowPlayingTvBloc, NowPlayingTvState>(
+                builder: (context, state) {
+                  if (state is NowPlayingTvInProgress) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is NowPlayingTvSuccess) {
+                    return TvSeries(state.data);
+                  }
                   return Text('Failed');
-                }
-              }),
+                },
+              ),
               _buildSubHeading(
                 title: 'Popular',
                 onTap: () =>

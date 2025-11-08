@@ -37,24 +37,24 @@ class TvSeriesListNotifier extends ChangeNotifier {
   final GetPopularTvSeries getPopularTvSeries;
   final GetTopRatedTvSeries getTopRatedTvSeries;
 
-  Future<void> fetchNowPlayingTvSeries() async {
-    _nowPlayingState = RequestState.Loading;
-    notifyListeners();
+  // Future<void> fetchNowPlayingTvSeries() async {
+  //   _nowPlayingState = RequestState.Loading;
+  //   notifyListeners();
 
-    final result = await getNowPlayingTvSeries.execute();
-    result.fold(
-      (failure) {
-        _nowPlayingState = RequestState.Error;
-        _message = failure.message;
-        notifyListeners();
-      },
-      (tvSeriesData) {
-        _nowPlayingState = RequestState.Loaded;
-        _nowPlayingTvSeries = tvSeriesData;
-        notifyListeners();
-      },
-    );
-  }
+  //   final result = await getNowPlayingTvSeries.execute();
+  //   result.fold(
+  //     (failure) {
+  //       _nowPlayingState = RequestState.Error;
+  //       _message = failure.message;
+  //       notifyListeners();
+  //     },
+  //     (tvSeriesData) {
+  //       _nowPlayingState = RequestState.Loaded;
+  //       _nowPlayingTvSeries = tvSeriesData;
+  //       notifyListeners();
+  //     },
+  //   );
+  // }
 
   Future<void> fetchPopularTvSeries() async {
     _popularTvSeriesState = RequestState.Loading;

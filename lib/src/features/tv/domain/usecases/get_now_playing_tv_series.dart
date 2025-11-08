@@ -1,14 +1,11 @@
-import 'package:dartz/dartz.dart';
-import 'package:ditonton/src/core/common/failure.dart';
-import 'package:ditonton/src/features/tv/domain/entities/tv.dart';
-import 'package:ditonton/src/features/tv/domain/repositories/tv_series_repository.dart';
+import 'package:ditonton/src/features/tv/presentation/blocs/now_playing_tv/now_playing_tv_bloc.dart';
 
 class GetNowPlayingTvSeries {
-  final TvSeriesRepository repository;
+  final NowPlayingTvBloc bloc;
 
-  GetNowPlayingTvSeries(this.repository);
+  GetNowPlayingTvSeries(this.bloc);
 
-  Future<Either<Failure, List<Tv>>> execute() {
-    return repository.getNowPlayingTvSeries();
+  Future<void> execute() async {
+    bloc.add(NowPlayingTvDataLoaded());
   }
 }
