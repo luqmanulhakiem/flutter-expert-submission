@@ -2,10 +2,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ditonton/src/core/common/constants.dart';
 import 'package:ditonton/src/features/tv/domain/entities/tv.dart';
 import 'package:ditonton/src/features/tv/domain/entities/tv_detail.dart';
+import 'package:ditonton/src/features/tv/domain/usecases/get_detail_tv_series.dart';
+import 'package:ditonton/src/features/tv/presentation/blocs/tv_series/tv_series_bloc.dart';
 import 'package:ditonton/src/features/tv/presentation/provider/tv_series_detail_notifier.dart';
 import 'package:ditonton/src/shared/domain/entities/genre.dart';
 import 'package:ditonton/src/core/common/state_enum.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 
@@ -23,38 +26,46 @@ class _TvDetailPageState extends State<TvDetailPage> {
   @override
   void initState() {
     super.initState();
+    _loadData();
     Future.microtask(() {
-      Provider.of<TvSeriesDetailNotifier>(context, listen: false)
-          .fetchMovieDetail(widget.id);
+      // Provider.of<TvSeriesDetailNotifier>(context, listen: false)
+      //     .fetchMovieDetail(widget.id);
       Provider.of<TvSeriesDetailNotifier>(context, listen: false)
           .loadWatchlistStatus(widget.id);
     });
   }
 
+  Future<void> _loadData() async {
+    // Blocs
+    final tvBloc = BlocProvider.of<TvSeriesBloc>(context, listen: false);
+
+    // Usecases
+    await GetDetailTvSeries(tvBloc).execute(widget.id);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Consumer<TvSeriesDetailNotifier>(
-        builder: (context, provider, child) {
-          if (provider.tvSeriesState == RequestState.Loading) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (provider.tvSeriesState == RequestState.Loaded) {
-            final movie = provider.tvSeries;
-            return SafeArea(
-              child: DetailContent(
-                movie,
-                provider.tvSeriesRecommendations,
-                provider.isAddedToWatchlist,
-              ),
-            );
-          } else {
-            return Text(provider.message);
-          }
-        },
-      ),
-    );
+    return Scaffold(body: BlocBuilder<TvSeriesBloc, TvSeriesState>(
+      builder: (context, state) {
+        if (state is TvSeriesSingleInProgress) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state is TvSeriesSingleSuccess) {
+          final movie = state.data;
+          return SafeArea(
+            child: DetailContent(
+              movie,
+              [],
+              false,
+              // provider.tvSeriesRecommendations,
+              // provider.isAddedToWatchlist,
+            ),
+          );
+        } else if (state is TvSeriesSingleFailure) {}
+        return Container();
+      },
+    ));
   }
 }
 

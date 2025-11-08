@@ -11,7 +11,7 @@ import 'package:ditonton/src/features/movie/presentation/pages/home_movie_page.d
 import 'package:ditonton/src/features/tv/presentation/blocs/now_playing_tv/now_playing_tv_bloc.dart';
 import 'package:ditonton/src/features/tv/presentation/blocs/top_rated_tv/top_rated_tv_bloc.dart';
 import 'package:ditonton/src/features/tv/presentation/blocs/tv_popular/tv_popular_bloc.dart';
-import 'package:ditonton/src/features/tv/presentation/provider/tv_search_notifier.dart';
+import 'package:ditonton/src/features/tv/presentation/blocs/tv_series/tv_series_bloc.dart';
 import 'package:ditonton/src/features/tv/presentation/provider/tv_series_detail_notifier.dart';
 import 'package:ditonton/src/features/tv/presentation/provider/watch_list_tv_notifer.dart';
 import 'package:flutter/material.dart';
@@ -39,11 +39,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => di.locator<NowPlayingTvBloc>()),
         BlocProvider(create: (context) => di.locator<TvPopularBloc>()),
         BlocProvider(create: (context) => di.locator<TopRatedTvBloc>()),
+        BlocProvider(create: (context) => di.locator<TvSeriesBloc>()),
         ChangeNotifierProvider(
           create: (_) => di.locator<TvSeriesDetailNotifier>(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => di.locator<TvSearchNotifier>(),
         ),
         ChangeNotifierProvider(
           create: (_) => di.locator<WatchListTvNotifer>(),

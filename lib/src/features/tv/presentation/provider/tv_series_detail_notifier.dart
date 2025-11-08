@@ -44,36 +44,36 @@ class TvSeriesDetailNotifier extends ChangeNotifier {
   bool _isAddedtoWatchlist = false;
   bool get isAddedToWatchlist => _isAddedtoWatchlist;
 
-  Future<void> fetchMovieDetail(int id) async {
-    _tvSeriesState = RequestState.Loading;
-    notifyListeners();
-    final detailResult = await getDetailTvSeries.execute(id);
-    final recommendationResult = await getRecommendationsTvSeries.execute(id);
-    detailResult.fold(
-      (failure) {
-        _tvSeriesState = RequestState.Error;
-        _message = failure.message;
-        notifyListeners();
-      },
-      (tv) {
-        _recommendationState = RequestState.Loading;
-        _tvSeries = tv;
-        notifyListeners();
-        recommendationResult.fold(
-          (failure) {
-            _recommendationState = RequestState.Error;
-            _message = failure.message;
-          },
-          (tvSeries) {
-            _recommendationState = RequestState.Loaded;
-            _tvSeriesRecommendations = tvSeries;
-          },
-        );
-        _tvSeriesState = RequestState.Loaded;
-        notifyListeners();
-      },
-    );
-  }
+  // Future<void> fetchMovieDetail(int id) async {
+  //   _tvSeriesState = RequestState.Loading;
+  //   notifyListeners();
+  //   final detailResult = await getDetailTvSeries.execute(id);
+  //   final recommendationResult = await getRecommendationsTvSeries.execute(id);
+  //   detailResult.fold(
+  //     (failure) {
+  //       _tvSeriesState = RequestState.Error;
+  //       _message = failure.message;
+  //       notifyListeners();
+  //     },
+  //     (tv) {
+  //       _recommendationState = RequestState.Loading;
+  //       _tvSeries = tv;
+  //       notifyListeners();
+  //       recommendationResult.fold(
+  //         (failure) {
+  //           _recommendationState = RequestState.Error;
+  //           _message = failure.message;
+  //         },
+  //         (tvSeries) {
+  //           _recommendationState = RequestState.Loaded;
+  //           _tvSeriesRecommendations = tvSeries;
+  //         },
+  //       );
+  //       _tvSeriesState = RequestState.Loaded;
+  //       notifyListeners();
+  //     },
+  //   );
+  // }
 
   String _watchlistMessage = '';
   String get watchlistMessage => _watchlistMessage;

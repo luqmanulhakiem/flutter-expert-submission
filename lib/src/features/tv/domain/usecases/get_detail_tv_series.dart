@@ -1,14 +1,11 @@
-import 'package:dartz/dartz.dart';
-import 'package:ditonton/src/core/common/failure.dart';
-import 'package:ditonton/src/features/tv/domain/entities/tv_detail.dart';
-import 'package:ditonton/src/features/tv/domain/repositories/tv_series_repository.dart';
+import 'package:ditonton/src/features/tv/presentation/blocs/tv_series/tv_series_bloc.dart';
 
 class GetDetailTvSeries {
-  final TvSeriesRepository repository;
+  final TvSeriesBloc bloc;
 
-  GetDetailTvSeries(this.repository);
+  GetDetailTvSeries(this.bloc);
 
-  Future<Either<Failure, TvDetail>> execute(int id) {
-    return repository.getTvSeriesDetail(id);
+  Future<void> execute(int id) async {
+    bloc.add(TvSeriesDataSingleLoaded(id: id));
   }
 }

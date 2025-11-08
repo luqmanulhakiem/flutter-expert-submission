@@ -1,14 +1,11 @@
-import 'package:dartz/dartz.dart';
-import 'package:ditonton/src/core/common/failure.dart';
-import 'package:ditonton/src/features/tv/domain/entities/tv.dart';
-import 'package:ditonton/src/features/tv/domain/repositories/tv_series_repository.dart';
+import 'package:ditonton/src/features/tv/presentation/blocs/tv_series/tv_series_bloc.dart';
 
 class SearchTvSeries {
-  final TvSeriesRepository repository;
+  final TvSeriesBloc bloc;
 
-  SearchTvSeries(this.repository);
+  SearchTvSeries(this.bloc);
 
-  Future<Either<Failure, List<Tv>>> execute(String query) {
-    return repository.searchTvSeries(query);
+  Future<void> execute(String query) async {
+    bloc.add(TvSeriesDataSearched(query: query));
   }
 }
