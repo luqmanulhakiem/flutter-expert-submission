@@ -1,8 +1,8 @@
-import 'package:ditonton/src/core/common/state_enum.dart';
-import 'package:ditonton/src/features/tv/presentation/provider/top_rated_tv_notifier.dart';
+import 'package:ditonton/src/features/tv/domain/usecases/get_top_rated_tv_series.dart';
+import 'package:ditonton/src/features/tv/presentation/blocs/top_rated_tv/top_rated_tv_bloc.dart';
 import 'package:ditonton/src/features/tv/presentation/widgets/tv_card.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TopRatedTvPage extends StatefulWidget {
   static const ROUTE_NAME = '/top-rated-tv';
@@ -15,9 +15,13 @@ class _TopRatedTvPageState extends State<TopRatedTvPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() =>
-        Provider.of<TopRatedTvNotifier>(context, listen: false)
-            .fetchTopRatedTvSeries());
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    final tvTopRated = BlocProvider.of<TopRatedTvBloc>(context, listen: false);
+
+    await GetTopRatedTvSeries(tvTopRated).execute();
   }
 
   @override
@@ -28,26 +32,27 @@ class _TopRatedTvPageState extends State<TopRatedTvPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Consumer<TopRatedTvNotifier>(
-          builder: (context, data, child) {
-            if (data.state == RequestState.Loading) {
+        child: BlocBuilder<TopRatedTvBloc, TopRatedTvState>(
+          builder: (context, state) {
+            if (state is TopRatedTvInProgress) {
               return Center(
                 child: CircularProgressIndicator(),
               );
-            } else if (data.state == RequestState.Loaded) {
+            } else if (state is TopRatedTvSuccess) {
               return ListView.builder(
                 itemBuilder: (context, index) {
-                  final tv = data.tv[index];
+                  final tv = state.data[index];
                   return TvCard(tv);
                 },
-                itemCount: data.tv.length,
+                itemCount: state.data.length,
               );
-            } else {
+            } else if (state is TopRatedTvFailure) {
               return Center(
                 key: Key('error_message'),
-                child: Text(data.message),
+                child: Text(state.message),
               );
             }
+            return Text('Failed');
           },
         ),
       ),

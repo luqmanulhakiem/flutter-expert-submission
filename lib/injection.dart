@@ -34,11 +34,10 @@ import 'package:ditonton/src/features/tv/domain/usecases/remove_watchlist_tv_ser
 import 'package:ditonton/src/features/tv/domain/usecases/save_watchlist_tv_series.dart';
 import 'package:ditonton/src/features/tv/domain/usecases/search_tv_series.dart';
 import 'package:ditonton/src/features/tv/presentation/blocs/now_playing_tv/now_playing_tv_bloc.dart';
+import 'package:ditonton/src/features/tv/presentation/blocs/top_rated_tv/top_rated_tv_bloc.dart';
 import 'package:ditonton/src/features/tv/presentation/blocs/tv_popular/tv_popular_bloc.dart';
-import 'package:ditonton/src/features/tv/presentation/provider/top_rated_tv_notifier.dart';
 import 'package:ditonton/src/features/tv/presentation/provider/tv_search_notifier.dart';
 import 'package:ditonton/src/features/tv/presentation/provider/tv_series_detail_notifier.dart';
-import 'package:ditonton/src/features/tv/presentation/provider/tv_series_list_notifier.dart';
 import 'package:ditonton/src/features/tv/presentation/provider/watch_list_tv_notifer.dart';
 import 'package:http/http.dart' as http;
 import 'package:get_it/get_it.dart';
@@ -47,13 +46,6 @@ final locator = GetIt.instance;
 
 void init() {
   // provider
-  locator.registerFactory(
-    () => TvSeriesListNotifier(
-      getNowPlayingTvSeries: locator(),
-      getPopularTvSeries: locator(),
-      getTopRatedTvSeries: locator(),
-    ),
-  );
   locator.registerFactory(
     () => TvSeriesDetailNotifier(
       getDetailTvSeries: locator(),
@@ -69,11 +61,6 @@ void init() {
     ),
   );
 
-  locator.registerFactory(
-    () => TopRatedTvNotifier(
-      getTopRatedTvSeries: locator(),
-    ),
-  );
   locator.registerFactory(
     () => WatchListTvNotifer(
       getWatchlistTvSeries: locator(),
@@ -136,6 +123,7 @@ void init() {
 
   locator.registerLazySingleton(() => NowPlayingTvBloc(locator()));
   locator.registerLazySingleton(() => TvPopularBloc(locator()));
+  locator.registerLazySingleton(() => TopRatedTvBloc(locator()));
 
   // helper
   locator.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());

@@ -9,11 +9,10 @@ import 'package:ditonton/src/features/movie/presentation/blocs/top_rated_movies/
 import 'package:ditonton/src/features/movie/presentation/blocs/watchlist_movies/watchlist_movies_bloc.dart';
 import 'package:ditonton/src/features/movie/presentation/pages/home_movie_page.dart';
 import 'package:ditonton/src/features/tv/presentation/blocs/now_playing_tv/now_playing_tv_bloc.dart';
+import 'package:ditonton/src/features/tv/presentation/blocs/top_rated_tv/top_rated_tv_bloc.dart';
 import 'package:ditonton/src/features/tv/presentation/blocs/tv_popular/tv_popular_bloc.dart';
-import 'package:ditonton/src/features/tv/presentation/provider/top_rated_tv_notifier.dart';
 import 'package:ditonton/src/features/tv/presentation/provider/tv_search_notifier.dart';
 import 'package:ditonton/src/features/tv/presentation/provider/tv_series_detail_notifier.dart';
-import 'package:ditonton/src/features/tv/presentation/provider/tv_series_list_notifier.dart';
 import 'package:ditonton/src/features/tv/presentation/provider/watch_list_tv_notifer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,9 +29,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => di.locator<TvSeriesListNotifier>(),
-        ),
         BlocProvider(create: (context) => di.locator<NowPlayingMoviesBloc>()),
         BlocProvider(create: (context) => di.locator<PopularMoviesBloc>()),
         BlocProvider(create: (context) => di.locator<WatchlistMoviesBloc>()),
@@ -42,11 +38,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => di.locator<MoviesBloc>()),
         BlocProvider(create: (context) => di.locator<NowPlayingTvBloc>()),
         BlocProvider(create: (context) => di.locator<TvPopularBloc>()),
+        BlocProvider(create: (context) => di.locator<TopRatedTvBloc>()),
         ChangeNotifierProvider(
           create: (_) => di.locator<TvSeriesDetailNotifier>(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => di.locator<TopRatedTvNotifier>(),
         ),
         ChangeNotifierProvider(
           create: (_) => di.locator<TvSearchNotifier>(),
