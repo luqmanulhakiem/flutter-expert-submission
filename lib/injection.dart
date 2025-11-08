@@ -16,6 +16,7 @@ import 'package:ditonton/src/features/movie/domain/usecases/search_movies.dart';
 import 'package:ditonton/src/features/movie/presentation/blocs/movies/movies_bloc.dart';
 import 'package:ditonton/src/features/movie/presentation/blocs/now_playing_movies/now_playing_movies_bloc.dart';
 import 'package:ditonton/src/features/movie/presentation/blocs/popular_movies/popular_movies_bloc.dart';
+import 'package:ditonton/src/features/movie/presentation/blocs/recommendation_movies/recommendation_movies_bloc.dart';
 import 'package:ditonton/src/features/movie/presentation/blocs/top_rated_movies/top_rated_movies_bloc.dart';
 import 'package:ditonton/src/features/movie/presentation/provider/movie_detail_notifier.dart';
 import 'package:ditonton/src/features/movie/presentation/provider/watchlist_movie_notifier.dart';
@@ -148,6 +149,7 @@ void init() {
   locator.registerLazySingleton(() => PopularMoviesBloc(locator()));
   locator.registerLazySingleton(() => TopRatedMoviesBloc(locator()));
   locator.registerLazySingleton(() => MoviesBloc(locator()));
+  locator.registerLazySingleton(() => RecommendationMoviesBloc(locator()));
 
   // helper
   locator.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());

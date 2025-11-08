@@ -1,31 +1,36 @@
-import 'package:dartz/dartz.dart';
-import 'package:ditonton/src/features/movie/domain/entities/movie.dart';
+import 'package:bloc_test/bloc_test.dart';
 import 'package:ditonton/src/features/movie/domain/usecases/get_movie_recommendations.dart';
+import 'package:ditonton/src/features/movie/presentation/blocs/recommendation_movies/recommendation_movies_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart' as mt;
 
-import '../../helpers/test_helper.mocks.dart';
+class MockRecommendationMoviesBloc
+    extends MockBloc<RecommendationMoviesEvent, RecommendationMoviesState>
+    implements RecommendationMoviesBloc {}
 
 void main() {
-  late GetMovieRecommendations usecase;
-  late MockMovieRepository mockMovieRepository;
-
-  setUp(() {
-    mockMovieRepository = MockMovieRepository();
-    usecase = GetMovieRecommendations(mockMovieRepository);
+  late MockRecommendationMoviesBloc bloc;
+  setUpAll(() {
+    mt.registerFallbackValue(RecommendationMoviesDataLoaded(id: 1));
+    bloc = MockRecommendationMoviesBloc();
   });
 
-  final tId = 1;
-  final tMovies = <Movie>[];
+  test("GetRecommendationMovies call RecommendationMoviesDataLoaded", () async {
+    mt.when(() => bloc.state).thenReturn(RecommendationMoviesInitial());
 
-  test('should get list of movie recommendations from the repository',
-      () async {
-    // arrange
-    when(mockMovieRepository.getMovieRecommendations(tId))
-        .thenAnswer((_) async => Right(tMovies));
-    // act
-    final result = await usecase.execute(tId);
-    // assert
-    expect(result, Right(tMovies));
+    final usecase = GetMovieRecommendations(bloc);
+
+    await usecase.execute(1);
+
+    mt
+        .verify(() => bloc.add(mt.any<RecommendationMoviesEvent>(
+            that: isA<RecommendationMoviesDataLoaded>())))
+        .called(1);
+  });
+
+  test('execute must success', () async {
+    whenListen(bloc, const Stream<RecommendationMoviesState>.empty(),
+        initialState: RecommendationMoviesInitial());
+    await expectLater(GetMovieRecommendations(bloc).execute(1), completes);
   });
 }

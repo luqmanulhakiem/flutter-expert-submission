@@ -1,14 +1,11 @@
-import 'package:dartz/dartz.dart';
-import 'package:ditonton/src/features/movie/domain/entities/movie_detail.dart';
-import 'package:ditonton/src/features/movie/domain/repositories/movie_repository.dart';
-import 'package:ditonton/src/core/common/failure.dart';
+import 'package:ditonton/src/features/movie/presentation/blocs/movies/movies_bloc.dart';
 
 class GetMovieDetail {
-  final MovieRepository repository;
+  final MoviesBloc bloc;
 
-  GetMovieDetail(this.repository);
+  GetMovieDetail(this.bloc);
 
-  Future<Either<Failure, MovieDetail>> execute(int id) {
-    return repository.getMovieDetail(id);
+  Future<void> execute(int id) async {
+    bloc.add(MoviesDataSingleLoaded(id: id));
   }
 }

@@ -45,36 +45,36 @@ class MovieDetailNotifier extends ChangeNotifier {
   bool _isAddedtoWatchlist = false;
   bool get isAddedToWatchlist => _isAddedtoWatchlist;
 
-  Future<void> fetchMovieDetail(int id) async {
-    _movieState = RequestState.Loading;
-    notifyListeners();
-    final detailResult = await getMovieDetail.execute(id);
-    final recommendationResult = await getMovieRecommendations.execute(id);
-    detailResult.fold(
-      (failure) {
-        _movieState = RequestState.Error;
-        _message = failure.message;
-        notifyListeners();
-      },
-      (movie) {
-        _recommendationState = RequestState.Loading;
-        _movie = movie;
-        notifyListeners();
-        recommendationResult.fold(
-          (failure) {
-            _recommendationState = RequestState.Error;
-            _message = failure.message;
-          },
-          (movies) {
-            _recommendationState = RequestState.Loaded;
-            _movieRecommendations = movies;
-          },
-        );
-        _movieState = RequestState.Loaded;
-        notifyListeners();
-      },
-    );
-  }
+  // Future<void> fetchMovieDetail(int id) async {
+  //   _movieState = RequestState.Loading;
+  //   notifyListeners();
+  //   final detailResult = await getMovieDetail.execute(id);
+  //   final recommendationResult = await getMovieRecommendations.execute(id);
+  //   detailResult.fold(
+  //     (failure) {
+  //       _movieState = RequestState.Error;
+  //       _message = failure.message;
+  //       notifyListeners();
+  //     },
+  //     (movie) {
+  //       _recommendationState = RequestState.Loading;
+  //       _movie = movie;
+  //       notifyListeners();
+  //       recommendationResult.fold(
+  //         (failure) {
+  //           _recommendationState = RequestState.Error;
+  //           _message = failure.message;
+  //         },
+  //         (movies) {
+  //           _recommendationState = RequestState.Loaded;
+  //           _movieRecommendations = movies;
+  //         },
+  //       );
+  //       _movieState = RequestState.Loaded;
+  //       notifyListeners();
+  //     },
+  //   );
+  // }
 
   String _watchlistMessage = '';
   String get watchlistMessage => _watchlistMessage;

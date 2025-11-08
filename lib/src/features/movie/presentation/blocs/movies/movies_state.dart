@@ -20,6 +20,14 @@ class MoviesFailure extends MoviesState {
 
 class MoviesSingleInProgress extends MoviesState {}
 
-class MoviesSingleSuccess extends MoviesState {}
+class MoviesSingleSuccess extends MoviesState {
+  final MovieDetail data;
 
-class MoviesSingleFailure extends MoviesState {}
+  MoviesSingleSuccess({required this.data});
+}
+
+class MoviesSingleFailure extends MoviesState {
+  final String message;
+
+  MoviesSingleFailure({required this.message});
+}

@@ -8,4 +8,8 @@ class MoviesDataSearched extends MoviesEvent {
   MoviesDataSearched({required this.query});
 }
 
-class MoviesDataSingleLoaded extends MoviesEvent {}
+class MoviesDataSingleLoaded extends MoviesEvent {
+  final int id;
+
+  MoviesDataSingleLoaded({required this.id});
+}
